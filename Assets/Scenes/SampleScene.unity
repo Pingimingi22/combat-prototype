@@ -254,6 +254,7 @@ MonoBehaviour:
   m_groundCheckRadius: 1
   m_weapon1: {fileID: 3442332280220956685}
   m_weapon2: {fileID: 348580887}
+  m_hitMarker: {fileID: 1995180151107488026, guid: 1209b5b82346bd646842582834e073a6, type: 3}
   m_hitMarkerSize: 0.25
   m_mainCamera: {fileID: 963194227}
 --- !u!54 &594497748
