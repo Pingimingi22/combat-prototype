@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour
     public delegate void KeyboardMoveEvent(float x, float y);
 
     /// <summary>Event which handles movement.</summary>
-    public event KeyboardMoveEvent OnMove;
+    public static event KeyboardMoveEvent OnMove;
 
     /// <summary>Delegate which handles single axis rotation.</summary>
     public delegate void KeyboardLookEvent(float x, float y);
@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour
     public delegate void KeyboardFireEvent(bool active);
 
     /// <summary>Event which handles weapon firing.</summary>
-    public event KeyboardFireEvent OnFire;
+    public static event KeyboardFireEvent OnFire;
 
     /// <summary>Delegate which handles weapon switching.</summary>
     public delegate void KeyboardSwitchWeaponEvent(bool active);
@@ -33,6 +33,18 @@ public class InputManager : MonoBehaviour
 
     /// <summary>Event which handles in-game pausing.</summary>
     public event KeyboardPauseEvent OnPause;
+
+    public delegate void KeyboardJumpEvent(bool active);
+
+    public static event KeyboardJumpEvent OnJump;
+
+    public delegate void KeyboardWeaponSelect1(bool active);
+
+    public static event KeyboardWeaponSelect1 OnSelect1;
+
+    public delegate void KeyboardWeaponselect2(bool active);
+
+    public static event KeyboardWeaponselect2 OnSelect2;
 
     private void Start()
     {
@@ -48,5 +60,9 @@ public class InputManager : MonoBehaviour
         OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         OnFire?.Invoke(Input.GetMouseButton(0));
         OnSwitchWeapon?.Invoke(Input.GetMouseButtonDown(1));
+        OnJump?.Invoke(Input.GetKey(KeyCode.Space));
+        OnSelect1?.Invoke(Input.GetKey(KeyCode.Alpha1));
+        OnSelect2?.Invoke(Input.GetKey(KeyCode.Alpha2));
+        
     }
 }
