@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public GameObject m_weapon1;
     public GameObject m_weapon2;
 
+    public GameObject m_hitMarker;
+
     [Header("Gizmos")]
     public float m_hitMarkerSize = 0.25f;
 
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody m_rigidbody;
 
     private List<Vector3> m_hitMarkers;
+    private List<GameObject> m_hitMarkersVisual;
 
 
     private float m_fireCounter = 0.0f;
@@ -42,6 +45,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_cacheJumpThing = Vector3.zero;
 
     private int m_currentlySelectedWeapon = 1;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -58,6 +63,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         m_hitMarkers = new List<Vector3>();
+        m_hitMarkersVisual = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -134,10 +140,16 @@ public class PlayerController : MonoBehaviour
                     if (m_hitMarkers.Count > 6)
                     {
                         m_hitMarkers.RemoveAt(0);
+                        Destroy(m_hitMarkersVisual[0]);
+                        m_hitMarkersVisual.RemoveAt(0);
                     }
 
 
                     m_hitMarkers.Add(hit.point);
+                    GameObject newMarker = GameObject.Instantiate(m_hitMarker);
+                    newMarker.transform.position = hit.point;
+                    newMarker.transform.LookAt(transform);
+                    m_hitMarkersVisual.Add(newMarker);
                     m_hasFired = true;
 
                     // Adding a force to the hit object.
