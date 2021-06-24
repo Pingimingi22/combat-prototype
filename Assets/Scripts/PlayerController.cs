@@ -209,4 +209,9 @@ public class PlayerController : MonoBehaviour
             m_weapon2.SetActive(true);
         }
     }
+
+    public void WeaponSway()
+    { 
+        
+    }
 }
