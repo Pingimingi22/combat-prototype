@@ -60,9 +60,11 @@ public class InputManager : MonoBehaviour
         OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         OnFire?.Invoke(Input.GetMouseButton(0));
         OnSwitchWeapon?.Invoke(Input.GetMouseButtonDown(1));
-        OnJump?.Invoke(Input.GetKey(KeyCode.Space));
+        OnJump?.Invoke(Input.GetKeyDown(KeyCode.Space));
         OnSelect1?.Invoke(Input.GetKey(KeyCode.Alpha1));
         OnSelect2?.Invoke(Input.GetKey(KeyCode.Alpha2));
+
+      
         
     }
 }

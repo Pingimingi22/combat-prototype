@@ -169,7 +169,12 @@ public class PlayerController : MonoBehaviour
         {
             //m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
             m_cacheMoveDirection += Vector3.up * m_jumpForce;
+
+
+            CustomDebug.GraphicalDebugger.CreateText("test", 50);
         }
+
+        
     }
 
 	private void OnDrawGizmos()
