@@ -46,6 +46,10 @@ public class InputManager : MonoBehaviour
 
     public static event KeyboardWeaponselect2 OnSelect2;
 
+    public delegate void DebugToggle(bool active);
+
+    public static event DebugToggle OnDebugToggle;
+
     private void Start()
     {
         //OnPause += GameManager.Instance.TogglePause;
@@ -63,7 +67,7 @@ public class InputManager : MonoBehaviour
         OnJump?.Invoke(Input.GetKeyDown(KeyCode.Space));
         OnSelect1?.Invoke(Input.GetKey(KeyCode.Alpha1));
         OnSelect2?.Invoke(Input.GetKey(KeyCode.Alpha2));
-
+        OnDebugToggle?.Invoke(Input.GetKeyDown(KeyCode.F3));
       
         
     }

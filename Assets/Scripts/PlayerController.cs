@@ -11,9 +11,10 @@ public class PlayerController : MonoBehaviour
     public float m_moveSpeed = 1;
     public float m_fireRate = 0.5f;
     public float m_bulletForce = 5;
-    public float m_jumpForce = 5;
+    public float m_JumpHeight = 5;
     public float m_groundCheckHeight = 1;
     public float m_groundCheckRadius = 1;
+    public float m_Gravity = -9.8f;
 
     public GameObject m_weapon1;
     public GameObject m_weapon2;
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private float m_fireCounter = 0.0f;
     private bool m_hasFired = false;
 
-    private bool m_isGrounded = true;
+    public bool IsGrounded { get; private set; }
 
 
 
@@ -79,15 +80,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
-        m_isGrounded = false;
-        RaycastHit hit;
-        Ray ray = new Ray(transform.position, Vector3.down);
-        if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
-        {
-            m_isGrounded = true;
-        }
-
+        IsGrounded = CheckGrounded();
 
         // Making sure angular velocity isn't a problem.
         m_rigidbody.angularVelocity = Vector3.zero;
@@ -95,8 +88,8 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-        m_rigidbody.velocity = m_cacheMoveDirection;
 
+        m_rigidbody.velocity = m_cacheMoveDirection;
         
 	}
 
@@ -124,7 +117,19 @@ public class PlayerController : MonoBehaviour
         
 
         //m_rigidbody.velocity = (moveDirection * m_moveSpeed) + new Vector3(0, m_rigidbody.velocity.y, 0);
+
         m_cacheMoveDirection = (moveDirection * m_moveSpeed) + new Vector3(0, m_rigidbody.velocity.y, 0);
+
+        //Vector3 targetVelocity = new Vector3(x, 0, z);
+        //targetVelocity = transform.TransformDirection(targetVelocity);
+        //targetVelocity *= m_moveSpeed;
+        //Vector3 velocity = m_rigidbody.velocity;
+        //float maxVelocityChange = 10;
+        //Vector3 velocityChange = (targetVelocity - velocity);
+        //velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+        //velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+        //velocityChange.y = 0;
+        //m_rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 	}
 
     public void Shoot(bool active)
@@ -165,20 +170,32 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(bool active)
     {
-        if (active && m_isGrounded)
+        if (active && IsGrounded)
         {
             //m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-            m_cacheMoveDirection += Vector3.up * m_jumpForce;
-
-
-            CustomDebug.GraphicalDebugger.CreateText("test", 50);
+            m_cacheMoveDirection = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, m_rigidbody.mass, m_Gravity);
+            m_cacheMoveDirection.x = m_rigidbody.velocity.x;
+            m_cacheMoveDirection.z = m_rigidbody.velocity.z;
+            m_rigidbody.velocity = m_cacheMoveDirection;
         }
 
         
     }
 
+    private bool CheckGrounded()
+    {
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, Vector3.down);
+        if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
+        {
+            Debug.Log(hit.transform.name);
+            return true;
+        }
+        return false;
+    }
 	private void OnDrawGizmos()
 	{
+        Color defaultColour = Gizmos.color;
 
 
         if (m_hitMarkers != null)
@@ -190,12 +207,20 @@ public class PlayerController : MonoBehaviour
         }
 
 
+        Gizmos.color = Color.red;
+
         RaycastHit hit;
         Ray ray = new Ray(transform.position, Vector3.down);
         if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
         {
             Gizmos.DrawLine(transform.position, hit.point);
+
+            CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, hit.point, Color.red, m_groundCheckRadius);
         }
+
+
+
+        Gizmos.color = defaultColour;
     }
 
     public void WeaponSelect1(bool active)
