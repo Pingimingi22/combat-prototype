@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     public Camera m_mainCamera;
+    public Transform m_orientation;
 
     private float xRotation = 0;
 
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_cacheMoveDirection = Vector3.zero;
     private Vector3 m_cacheJumpThing = Vector3.zero;
 
-    private int m_currentlySelectedWeapon = 1;
+
 
     
 
@@ -65,6 +66,10 @@ public class PlayerController : MonoBehaviour
 
         m_hitMarkers = new List<Vector3>();
         m_hitMarkersVisual = new List<GameObject>();
+
+
+        // testing
+        InputManager.OnHorizontalLook += HorizontalLook;
     }
 
     // Update is called once per frame
@@ -83,53 +88,67 @@ public class PlayerController : MonoBehaviour
         IsGrounded = CheckGrounded();
 
         // Making sure angular velocity isn't a problem.
+        m_rigidbody.velocity = new Vector3(m_cacheMoveDirection.x, m_rigidbody.velocity.y, m_cacheMoveDirection.z);
         m_rigidbody.angularVelocity = Vector3.zero;
     }
 
 	private void FixedUpdate()
 	{
 
-        m_rigidbody.velocity = m_cacheMoveDirection;
+        
         
 	}
 
 	public void Look(float xDelta, float yDelta)
     {
-        xDelta *= Time.deltaTime * m_sensitivity;
-        yDelta *= Time.deltaTime * m_sensitivity;
+        //xDelta *= m_sensitivity;
+        //yDelta *= m_sensitivity;
+        //
+        //
+        //// ---------------- Up and down camera look ---------------- //
+        //xRotation -= yDelta;
+        //xRotation = Mathf.Clamp(xRotation, -m_verticalLookLock, m_verticalLookLock);
+        //m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        //
+        //// ---------------- Body move left-right look ---------------- //
+        ////transform.Rotate(Vector3.up * xDelta);
+        //
+        //
+        //m_rigidbody.rotation = m_rigidbody.rotation * Quaternion.Euler(Vector3.up * xDelta);
 
 
-        // ---------------- Up and down camera look ---------------- //
-        xRotation -= yDelta;
-        xRotation = Mathf.Clamp(xRotation, -m_verticalLookLock, m_verticalLookLock);
-        m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        float mouseX = Input.GetAxis("Mouse X") * m_sensitivity * Time.fixedDeltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * m_sensitivity * Time.fixedDeltaTime;
 
-        // ---------------- Body move left-right look ---------------- //
-        transform.Rotate(Vector3.up * xDelta);
+        // Finding current look rotation
+        Vector3 rot = m_mainCamera.transform.localRotation.eulerAngles;
+        float desiredX = rot.y + mouseX;
+
+        // Rotate
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        // Perform the rotations
+        m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, desiredX, 0);
+        m_orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
+
+    }
+
+    public void HorizontalLook(float xDelta)
+    {
+        //m_rigidbody.rotation *= Quaternion.Euler(Vector3.up * xDelta * 1.9f);
     }
 
 	public void Move(float x, float z)
 	{
         Vector3 moveDirection = transform.right * x + transform.forward * z;
-        
-        //moveDirection.Normalize();
 
-        
+        Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
+        Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
 
-        //m_rigidbody.velocity = (moveDirection * m_moveSpeed) + new Vector3(0, m_rigidbody.velocity.y, 0);
+        m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime) + new Vector3(0, m_rigidbody.velocity.y, 0);
 
-        m_cacheMoveDirection = (moveDirection * m_moveSpeed) + new Vector3(0, m_rigidbody.velocity.y, 0);
 
-        //Vector3 targetVelocity = new Vector3(x, 0, z);
-        //targetVelocity = transform.TransformDirection(targetVelocity);
-        //targetVelocity *= m_moveSpeed;
-        //Vector3 velocity = m_rigidbody.velocity;
-        //float maxVelocityChange = 10;
-        //Vector3 velocityChange = (targetVelocity - velocity);
-        //velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-        //velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-        //velocityChange.y = 0;
-        //m_rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 	}
 
     public void Shoot(bool active)

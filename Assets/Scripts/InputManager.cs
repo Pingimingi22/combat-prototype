@@ -16,6 +16,10 @@ public class InputManager : MonoBehaviour
     /// <summary>Event which handles looking.</summary>
     public static event KeyboardLookEvent OnLook;
 
+    public delegate void KeyboardLookHorizontalEvent(float x);
+
+    public static event KeyboardLookHorizontalEvent OnHorizontalLook;
+
     /// <summary>Delegate which handles weapon firing.</summary>
     public delegate void KeyboardFireEvent(bool active);
 
@@ -60,7 +64,7 @@ public class InputManager : MonoBehaviour
     {
         OnPause?.Invoke(Input.GetKeyDown(KeyCode.Escape));
 
-        OnLook?.Invoke(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+       
         OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         OnFire?.Invoke(Input.GetMouseButton(0));
         OnSwitchWeapon?.Invoke(Input.GetMouseButtonDown(1));
@@ -68,7 +72,15 @@ public class InputManager : MonoBehaviour
         OnSelect1?.Invoke(Input.GetKey(KeyCode.Alpha1));
         OnSelect2?.Invoke(Input.GetKey(KeyCode.Alpha2));
         OnDebugToggle?.Invoke(Input.GetKeyDown(KeyCode.F3));
-      
+
         
+        OnLook?.Invoke(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        
+    }
+
+	private void FixedUpdate()
+	{
+        // testing
+        OnHorizontalLook?.Invoke(Input.GetAxisRaw("Mouse X"));
     }
 }
