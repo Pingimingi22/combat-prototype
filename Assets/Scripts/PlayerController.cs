@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float m_groundCheckRadius = 1;
     public float m_Gravity = -9.8f;
     public float m_maxSpeed = 5;
+    public float m_BobSpeed = 1;
+    public float m_BobDistance = 1;
 
     public GameObject m_weapon1;
     public GameObject m_weapon2;
@@ -53,8 +55,24 @@ public class PlayerController : MonoBehaviour
 
     // Exposed variables for debugging.
     [HideInInspector]
-    public float m_currentMoveSpeed;
-    
+    public float m_currentMoveSpeed { get; private set; }
+    [HideInInspector]
+    public bool m_isMoving { get; private set; }
+
+
+
+    // Weapon sway stuff.
+    [HideInInspector]
+    public float m_SwayTimer = 0.0f;
+    [HideInInspector]
+    public float m_WaveSlice = 0.0f;
+    [HideInInspector]
+    public float m_WaveSliceX = 0.0f;
+    [HideInInspector]
+    public Vector3 m_Weapon1MidPoint;
+    [HideInInspector]
+    public Vector3 m_Weapon2MidPoint;
+
 
     // Start is called before the first frame update
     void Start()
@@ -77,7 +95,11 @@ public class PlayerController : MonoBehaviour
         // testing
         InputManager.OnHorizontalLook += HorizontalLook;
 
-        
+
+        // Cacheing weapon locations.
+        m_Weapon1MidPoint = m_weapon1.transform.localPosition;
+        m_Weapon2MidPoint = m_weapon2.transform.localPosition;
+
     }
 
     // Update is called once per frame
@@ -100,6 +122,8 @@ public class PlayerController : MonoBehaviour
         m_rigidbody.angularVelocity = Vector3.zero;
 
         m_currentMoveSpeed = m_rigidbody.velocity.magnitude;
+
+        WeaponSway();
     }
 
 	private void FixedUpdate()
@@ -160,6 +184,13 @@ public class PlayerController : MonoBehaviour
         Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
         
         m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime) + new Vector3(0, m_rigidbody.velocity.y, 0);
+
+
+        // Tracking whether we are moving or not.
+        m_isMoving = false;
+        if (x != 0 || z != 0)
+            m_isMoving = true; 
+
 
         // Finding velocity relative to where the player is looking
         //Vector2 mag = FindVelRelativeToLook();
@@ -257,7 +288,7 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        Gizmos.color = Color.red;
+        
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position, Vector3.down);
@@ -265,7 +296,11 @@ public class PlayerController : MonoBehaviour
         {
             Gizmos.DrawLine(transform.position, hit.point);
 
-            CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, hit.point, Color.red, m_groundCheckRadius);
+            CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, hit.point, Color.green, m_groundCheckRadius);
+        }
+        else
+        {
+            CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, transform.position + Vector3.down, Color.red, m_groundCheckRadius);
         }
 
 
@@ -291,7 +326,36 @@ public class PlayerController : MonoBehaviour
     }
 
     public void WeaponSway()
-    { 
+    {
+        // Right now I'm only testing this with weapon 1.
+
+        Vector3 localPosition = m_weapon1.transform.localPosition;
+        if (m_isMoving)
+        {
+            // Do weapon sway stuff.
+            m_SwayTimer += Time.deltaTime;
+            m_WaveSlice = -(Mathf.Sin(m_SwayTimer * m_BobSpeed) + 1) / 2;
+            m_WaveSliceX = Mathf.Cos(m_SwayTimer * m_BobSpeed);
+            
+            if (m_WaveSlice >= -0.5f)
+            {
+                m_WaveSlice = -1 - -(Mathf.Sin(m_SwayTimer * m_BobSpeed) + 1) / 2;
+            }
+
+            float translateChangeX = m_WaveSliceX * m_BobDistance;
+            float translateChangeY = m_WaveSlice * m_BobDistance;
+            localPosition.y = m_Weapon1MidPoint.y + translateChangeY;
+            localPosition.x = m_Weapon1MidPoint.x + translateChangeX;
+
+            m_weapon1.transform.localPosition = localPosition;
+        }
+        else
+        {
+            m_SwayTimer = 0.0f;
+            localPosition.y = m_Weapon1MidPoint.y;
+            localPosition.x = m_Weapon1MidPoint.x;
+            m_weapon1.transform.localPosition = Vector3.Lerp(m_weapon1.transform.localPosition, m_Weapon1MidPoint, 0.01f);
+        }
         
     }
 

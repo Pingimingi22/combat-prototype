@@ -18,8 +18,13 @@ public class DebugUIHandler : MonoBehaviour
 
     [Header("Movement")]
     public Text m_moveSpeedText;
+    public Text m_isMovingText;
     
     private bool m_Toggle = true;
+
+    [Header("Weapon Sway")]
+    public Text m_SwayTimerText;
+    public Text m_WaveSliceText;
 
     private void Awake()
     {
@@ -38,6 +43,9 @@ public class DebugUIHandler : MonoBehaviour
     {
         GraphicalDebugger.Assign<bool>(m_playerController.IsGrounded, "IsGrounded", m_isGroundedText);
         GraphicalDebugger.Assign<float>(m_playerController.m_currentMoveSpeed, "MoveSpeed", m_moveSpeedText);
+        GraphicalDebugger.Assign<bool>(m_playerController.m_isMoving, "IsMoving", m_isMovingText);
+        GraphicalDebugger.Assign<float>(m_playerController.m_WaveSlice, "WaveSlice", m_WaveSliceText);
+        GraphicalDebugger.Assign<float>(m_playerController.m_SwayTimer, "SwayTimer", m_SwayTimerText);
     }
 
     public void Toggle(bool active)
