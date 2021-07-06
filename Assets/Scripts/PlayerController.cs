@@ -134,7 +134,7 @@ namespace Player
 
             m_currentMoveSpeed = m_rigidbody.velocity.magnitude;
 
-            WeaponSway();
+            WeaponBob();
         }
 
         private void FixedUpdate()
@@ -338,7 +338,7 @@ namespace Player
             }
         }
 
-        public void WeaponSway()
+        public void WeaponBob()
         {
             // Right now I'm only testing this with weapon 1.
 
@@ -374,6 +374,11 @@ namespace Player
                 currentWeapon.transform.localPosition = Vector3.Lerp(currentWeapon.transform.localPosition, currentWeapon.m_MidPoint, 0.01f);
             }
 
+        }
+
+        public void WeaponSway()
+        { 
+            
         }
 
         public Vector2 FindVelRelativeToLook()

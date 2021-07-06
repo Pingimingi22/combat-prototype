@@ -29,6 +29,10 @@ public class DebugUIHandler : MonoBehaviour
     [Header("Weapon General")]
     public Text m_CurrentWeaponSlotText;
 
+    [Header("Combat General")]
+    public Text m_CurrentHealthText;
+    public Text m_CurrentMaxHealthText;
+
     private void Awake()
     {
         Debug.Assert(m_playerController);
@@ -50,6 +54,8 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<float>(m_playerController.m_WaveSlice, "WaveSlice", m_WaveSliceText);
         GraphicalDebugger.Assign<float>(m_playerController.m_SwayTimer, "SwayTimer", m_SwayTimerText);
         GraphicalDebugger.Assign<string>(PlayerManager.m_CurrentWeapon.ToString(), "CurrentWeaponSlot", m_CurrentWeaponSlotText);
+        GraphicalDebugger.Assign<float>(PlayerManager.s_Health, "Health", m_CurrentHealthText);
+        GraphicalDebugger.Assign<float>(PlayerManager.s_MaxHealth, "MaxHealth", m_CurrentMaxHealthText);
     }
 
     public void Toggle(bool active)
