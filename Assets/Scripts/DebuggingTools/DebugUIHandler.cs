@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
+using Player;
 using CustomDebug;
 
 public class DebugUIHandler : MonoBehaviour
@@ -26,6 +26,9 @@ public class DebugUIHandler : MonoBehaviour
     public Text m_SwayTimerText;
     public Text m_WaveSliceText;
 
+    [Header("Weapon General")]
+    public Text m_CurrentWeaponSlotText;
+
     private void Awake()
     {
         Debug.Assert(m_playerController);
@@ -46,6 +49,7 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<bool>(m_playerController.m_isMoving, "IsMoving", m_isMovingText);
         GraphicalDebugger.Assign<float>(m_playerController.m_WaveSlice, "WaveSlice", m_WaveSliceText);
         GraphicalDebugger.Assign<float>(m_playerController.m_SwayTimer, "SwayTimer", m_SwayTimerText);
+        GraphicalDebugger.Assign<string>(PlayerManager.m_CurrentWeapon.ToString(), "CurrentWeaponSlot", m_CurrentWeaponSlotText);
     }
 
     public void Toggle(bool active)
