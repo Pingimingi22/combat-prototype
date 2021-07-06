@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public float m_groundCheckHeight = 1;
     public float m_groundCheckRadius = 1;
     public float m_Gravity = -9.8f;
+    public float m_maxSpeed = 5;
 
     public GameObject m_weapon1;
     public GameObject m_weapon2;
@@ -47,7 +48,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_cacheJumpThing = Vector3.zero;
 
 
+    // Private multipliers to make numbers smaller.
+    private float m_speedMultiplier = 1000;
 
+    // Exposed variables for debugging.
+    [HideInInspector]
+    public float m_currentMoveSpeed;
     
 
     // Start is called before the first frame update
@@ -70,6 +76,8 @@ public class PlayerController : MonoBehaviour
 
         // testing
         InputManager.OnHorizontalLook += HorizontalLook;
+
+        
     }
 
     // Update is called once per frame
@@ -90,6 +98,8 @@ public class PlayerController : MonoBehaviour
         // Making sure angular velocity isn't a problem.
         m_rigidbody.velocity = new Vector3(m_cacheMoveDirection.x, m_rigidbody.velocity.y, m_cacheMoveDirection.z);
         m_rigidbody.angularVelocity = Vector3.zero;
+
+        m_currentMoveSpeed = m_rigidbody.velocity.magnitude;
     }
 
 	private void FixedUpdate()
@@ -141,13 +151,34 @@ public class PlayerController : MonoBehaviour
 
 	public void Move(float x, float z)
 	{
-        Vector3 moveDirection = transform.right * x + transform.forward * z;
+        //m_rigidbody.AddForce(Vector3.down * Time.deltaTime * 50);
 
+
+        Vector3 moveDirection = transform.right * x + transform.forward * z;
+        
         Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
         Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
-
+        
         m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime) + new Vector3(0, m_rigidbody.velocity.y, 0);
 
+        // Finding velocity relative to where the player is looking
+        //Vector2 mag = FindVelRelativeToLook();
+        //float xMag = mag.x;
+        //float yMag = mag.y;
+
+        // Should be counter-acting bad movement?
+
+        //if (x > 0 && xMag > m_maxSpeed)
+        //    x = 0;
+        //if (x < 0 && xMag < -m_maxSpeed)
+        //    x = 0;
+        //if (z > 0 && yMag > m_maxSpeed)
+        //    z = 0;
+        //if (z < 0 && yMag < -m_maxSpeed)
+        //    z = 0;
+        //
+        //m_rigidbody.AddForce(m_orientation.transform.forward * z * m_moveSpeed * Time.deltaTime * m_speedMultiplier);
+        //m_rigidbody.AddForce(m_orientation.transform.right * x * m_moveSpeed * Time.deltaTime * m_speedMultiplier);
 
 	}
 
@@ -262,5 +293,20 @@ public class PlayerController : MonoBehaviour
     public void WeaponSway()
     { 
         
+    }
+
+    public Vector2 FindVelRelativeToLook()
+    {
+        float lookAngle = m_orientation.transform.eulerAngles.y;
+        float moveAngle = Mathf.Atan2(m_rigidbody.velocity.x, m_rigidbody.velocity.z) * Mathf.Rad2Deg;
+
+        float u = Mathf.DeltaAngle(lookAngle, moveAngle);
+        float v = 90 - u;
+
+        float magnitude = m_rigidbody.velocity.magnitude;
+        float yMag = magnitude * Mathf.Cos(u * Mathf.Deg2Rad);
+        float xMag = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
+
+        return new Vector2(xMag, yMag);
     }
 }

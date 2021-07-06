@@ -15,6 +15,9 @@ public class DebugUIHandler : MonoBehaviour
 
     [Header("Jump")]
     public Text m_isGroundedText;
+
+    [Header("Movement")]
+    public Text m_moveSpeedText;
     
     private bool m_Toggle = true;
 
@@ -34,6 +37,7 @@ public class DebugUIHandler : MonoBehaviour
     void Update()
     {
         GraphicalDebugger.Assign<bool>(m_playerController.IsGrounded, "IsGrounded", m_isGroundedText);
+        GraphicalDebugger.Assign<float>(m_playerController.m_currentMoveSpeed, "MoveSpeed", m_moveSpeedText);
     }
 
     public void Toggle(bool active)

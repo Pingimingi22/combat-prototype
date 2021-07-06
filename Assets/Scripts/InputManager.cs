@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour
         OnPause?.Invoke(Input.GetKeyDown(KeyCode.Escape));
 
        
-        OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        
         OnFire?.Invoke(Input.GetMouseButton(0));
         OnSwitchWeapon?.Invoke(Input.GetMouseButtonDown(1));
         OnJump?.Invoke(Input.GetKeyDown(KeyCode.Space));
@@ -80,6 +80,7 @@ public class InputManager : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+        OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         // testing
         OnHorizontalLook?.Invoke(Input.GetAxisRaw("Mouse X"));
     }
