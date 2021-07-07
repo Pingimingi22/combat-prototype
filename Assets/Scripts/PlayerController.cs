@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Player;
 using Combat;
+using CombatUtilities;
 
 namespace Player
 {
@@ -39,8 +40,8 @@ namespace Player
 
         private Rigidbody m_rigidbody;
 
-        private List<Vector3> m_hitMarkers;
-        private List<GameObject> m_hitMarkersVisual;
+        //private List<Vector3> m_hitMarkers;
+        //private List<GameObject> m_hitMarkersVisual;
 
 
         private float m_fireCounter = 0.0f;
@@ -98,8 +99,8 @@ namespace Player
 
             Cursor.lockState = CursorLockMode.Locked;
 
-            m_hitMarkers = new List<Vector3>();
-            m_hitMarkersVisual = new List<GameObject>();
+            //m_hitMarkers = new List<Vector3>();
+            //m_hitMarkersVisual = new List<GameObject>();
 
 
             // testing
@@ -234,19 +235,23 @@ namespace Player
                 {
                     if (hit.transform.gameObject != null)
                     {
-                        if (m_hitMarkers.Count > 6)
-                        {
-                            m_hitMarkers.RemoveAt(0);
-                            Destroy(m_hitMarkersVisual[0]);
-                            m_hitMarkersVisual.RemoveAt(0);
-                        }
+                        //if (m_hitMarkers.Count > 6)
+                        //{
+                        //    m_hitMarkers.RemoveAt(0);
+                        //    Destroy(m_hitMarkersVisual[0]);
+                        //    m_hitMarkersVisual.RemoveAt(0);
+                        //}
 
 
-                        m_hitMarkers.Add(hit.point);
-                        GameObject newMarker = GameObject.Instantiate(m_hitMarker);
-                        newMarker.transform.position = hit.point;
-                        newMarker.transform.LookAt(transform);
-                        m_hitMarkersVisual.Add(newMarker);
+                        //m_hitMarkers.Add(hit.point);
+                        //GameObject newMarker = GameObject.Instantiate(m_hitMarker);
+                        //newMarker.transform.position = hit.point;
+                        //newMarker.transform.LookAt(transform);
+                        //m_hitMarkersVisual.Add(newMarker);
+
+                        Decal newDecal = new Decal(hit.transform, hit.point, m_hitMarker);
+                        GameManager.Instance.AddDecal(newDecal);
+
                         m_hasFired = true;
 
                         // Adding a force to the hit object.
@@ -290,13 +295,13 @@ namespace Player
             Color defaultColour = Gizmos.color;
 
 
-            if (m_hitMarkers != null)
-            {
-                for (int i = 0; i < m_hitMarkers.Count; i++)
-                {
-                    Gizmos.DrawSphere(m_hitMarkers[i], m_hitMarkerSize);
-                }
-            }
+            //if (m_hitMarkers != null)
+            //{
+            //    for (int i = 0; i < m_hitMarkers.Count; i++)
+            //    {
+            //        Gizmos.DrawSphere(m_hitMarkers[i], m_hitMarkerSize);
+            //    }
+            //}
 
 
 
