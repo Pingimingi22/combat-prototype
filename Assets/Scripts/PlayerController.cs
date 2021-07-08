@@ -249,7 +249,7 @@ namespace Player
                         //newMarker.transform.LookAt(transform);
                         //m_hitMarkersVisual.Add(newMarker);
 
-                        Decal newDecal = new Decal(hit.transform, hit.point, m_hitMarker);
+                        Decal newDecal = new Decal(hit.transform, hit.point, m_hitMarker, hit.normal);
                         GameManager.Instance.AddDecal(newDecal);
 
                         m_hasFired = true;
