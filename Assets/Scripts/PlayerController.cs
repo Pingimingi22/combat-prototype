@@ -147,22 +147,6 @@ namespace Player
 
         public void Look(float xDelta, float yDelta)
         {
-            //xDelta *= m_sensitivity;
-            //yDelta *= m_sensitivity;
-            //
-            //
-            //// ---------------- Up and down camera look ---------------- //
-            //xRotation -= yDelta;
-            //xRotation = Mathf.Clamp(xRotation, -m_verticalLookLock, m_verticalLookLock);
-            //m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
-            //
-            //// ---------------- Body move left-right look ---------------- //
-            ////transform.Rotate(Vector3.up * xDelta);
-            //
-            //
-            //m_rigidbody.rotation = m_rigidbody.rotation * Quaternion.Euler(Vector3.up * xDelta);
-
-
             float mouseX = Input.GetAxis("Mouse X") * m_sensitivity * Time.fixedDeltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * m_sensitivity * Time.fixedDeltaTime;
 
@@ -187,9 +171,6 @@ namespace Player
 
         public void Move(float x, float z)
         {
-            //m_rigidbody.AddForce(Vector3.down * Time.deltaTime * 50);
-
-
             Vector3 moveDirection = transform.right * x + transform.forward * z;
 
             Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
@@ -202,27 +183,6 @@ namespace Player
             m_isMoving = false;
             if (x != 0 || z != 0)
                 m_isMoving = true;
-
-
-            // Finding velocity relative to where the player is looking
-            //Vector2 mag = FindVelRelativeToLook();
-            //float xMag = mag.x;
-            //float yMag = mag.y;
-
-            // Should be counter-acting bad movement?
-
-            //if (x > 0 && xMag > m_maxSpeed)
-            //    x = 0;
-            //if (x < 0 && xMag < -m_maxSpeed)
-            //    x = 0;
-            //if (z > 0 && yMag > m_maxSpeed)
-            //    z = 0;
-            //if (z < 0 && yMag < -m_maxSpeed)
-            //    z = 0;
-            //
-            //m_rigidbody.AddForce(m_orientation.transform.forward * z * m_moveSpeed * Time.deltaTime * m_speedMultiplier);
-            //m_rigidbody.AddForce(m_orientation.transform.right * x * m_moveSpeed * Time.deltaTime * m_speedMultiplier);
-
         }
 
         public void Shoot(bool active)
@@ -235,20 +195,6 @@ namespace Player
                 {
                     if (hit.transform.gameObject != null)
                     {
-                        //if (m_hitMarkers.Count > 6)
-                        //{
-                        //    m_hitMarkers.RemoveAt(0);
-                        //    Destroy(m_hitMarkersVisual[0]);
-                        //    m_hitMarkersVisual.RemoveAt(0);
-                        //}
-
-
-                        //m_hitMarkers.Add(hit.point);
-                        //GameObject newMarker = GameObject.Instantiate(m_hitMarker);
-                        //newMarker.transform.position = hit.point;
-                        //newMarker.transform.LookAt(transform);
-                        //m_hitMarkersVisual.Add(newMarker);
-
                         Decal newDecal = new Decal(hit.transform, hit.point, m_hitMarker, hit.normal);
                         GameManager.Instance.AddDecal(newDecal);
 
@@ -259,7 +205,6 @@ namespace Player
                         {
                             hit.rigidbody.AddForce(m_mainCamera.transform.forward * m_bulletForce, ForceMode.Impulse);
                         }
-
                     }
                 }
             }
@@ -275,8 +220,6 @@ namespace Player
                 m_cacheMoveDirection.z = m_rigidbody.velocity.z;
                 m_rigidbody.velocity = m_cacheMoveDirection;
             }
-
-
         }
 
         private bool CheckGrounded()
@@ -294,18 +237,6 @@ namespace Player
         {
             Color defaultColour = Gizmos.color;
 
-
-            //if (m_hitMarkers != null)
-            //{
-            //    for (int i = 0; i < m_hitMarkers.Count; i++)
-            //    {
-            //        Gizmos.DrawSphere(m_hitMarkers[i], m_hitMarkerSize);
-            //    }
-            //}
-
-
-
-
             RaycastHit hit;
             Ray ray = new Ray(transform.position, Vector3.down);
             if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
@@ -318,8 +249,6 @@ namespace Player
             {
                 CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, transform.position + Vector3.down, Color.red, m_groundCheckRadius);
             }
-
-
 
             Gizmos.color = defaultColour;
         }
@@ -345,12 +274,9 @@ namespace Player
 
         public void WeaponBob()
         {
-            // Right now I'm only testing this with weapon 1.
-
             Weapon currentWeapon = PlayerUtilities.GetCurrentWeapon();
             Vector3 localPosition = currentWeapon.transform.localPosition;
             Vector3 currentWeaponMidPoint = currentWeapon.m_MidPoint;
-
 
             if (m_isMoving)
             {
