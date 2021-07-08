@@ -8,4 +8,5 @@ public abstract class Ability : ScriptableObject
 {
     public string m_AbilityName;
     public AbilityBehaviour m_Behaviour;
+    public float m_Cooldown;
 }

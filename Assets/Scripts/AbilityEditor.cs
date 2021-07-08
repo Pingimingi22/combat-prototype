@@ -22,10 +22,13 @@ namespace PrototypeEditorTools
         // =========== Generic Settings =========== //
         private string m_name = "Default Ablitity";
         private AbilityBehaviour m_behaviour;
+        private float m_Cooldown;
         // ======================================== //
 
         // =========== Lunge Settings =========== //
         private float m_LungeForce;
+        private bool m_LungeHasAreaDamage;
+        private float m_LungeAreaDamage;
         // ====================================== //
 
         [MenuItem("Window/Ability Editor")]
@@ -47,11 +50,13 @@ namespace PrototypeEditorTools
 
 
             GUILayout.Label("Ability Creator", testStyle);
-            GUILayout.Label("Ablitity Name:", EditorStyles.boldLabel);
+            GUILayout.Label("Generic Settings:", EditorStyles.boldLabel);
 
 
-            m_name = EditorGUILayout.TextField(m_name);
+            m_name = EditorGUILayout.TextField("Ability Name:", m_name);
             m_behaviour = (AbilityBehaviour)EditorGUILayout.EnumPopup("Ability Behaviour:", m_behaviour);
+            m_Cooldown = EditorGUILayout.FloatField("Cooldown:", m_Cooldown);
+            EditorGUILayout.Separator();
 
             DisplaySpecificSettings(m_behaviour);
 
@@ -67,8 +72,10 @@ namespace PrototypeEditorTools
         private void CreateAbility(string name, string path, string className)
         {
             ScriptableObject testAbility = ScriptableObject.CreateInstance(className);
+    
             if (AssetDatabase.FindAssets(name).Length == 0)
             {
+                SaveObject(testAbility);
                 Debug.Log("Created a new ability.");
 
                 AssetDatabase.CreateAsset(testAbility, path);
@@ -111,6 +118,9 @@ namespace PrototypeEditorTools
             headingStyle.normal.textColor = Color.white;
             GUILayout.Label("Lunge settings:", headingStyle);
             EditorGUILayout.FloatField("Lunge Force", m_LungeForce);
+            m_LungeHasAreaDamage = EditorGUILayout.BeginToggleGroup("Lunge Area Damage", m_LungeHasAreaDamage);
+            m_LungeAreaDamage = EditorGUILayout.FloatField("Area Damage", m_LungeAreaDamage);
+            EditorGUILayout.EndToggleGroup();
         }
 
         private void DisplaySpecificSettings(AbilityBehaviour behaviour)
@@ -125,6 +135,37 @@ namespace PrototypeEditorTools
                     break;
                 case AbilityBehaviour.LUNGE:
                     DisplayLunge();
+                    break;
+                case AbilityBehaviour.SPEED:
+                    break;
+                case AbilityBehaviour.STRENGTH:
+                    break;
+                case AbilityBehaviour.TELEPORT:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SaveObject(ScriptableObject obj)
+        {
+            ((Ability)obj).m_AbilityName = m_name;
+            ((Ability)obj).m_Behaviour = m_behaviour;
+            ((Ability)obj).m_Cooldown = m_Cooldown;
+
+
+            switch (m_behaviour)
+            {
+                case AbilityBehaviour.DRAIN:
+                    break;
+                case AbilityBehaviour.EXPLOSION:
+                    break;
+                case AbilityBehaviour.ICARUS:
+                    break;
+                case AbilityBehaviour.LUNGE:
+                    ((AbilityLunge)obj).m_LungeForce = m_LungeForce;
+                    ((AbilityLunge)obj).m_HasAreaDamage = m_LungeHasAreaDamage;
+                    ((AbilityLunge)obj).m_AreaDamage = m_LungeAreaDamage;
                     break;
                 case AbilityBehaviour.SPEED:
                     break;
