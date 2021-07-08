@@ -24,35 +24,28 @@ namespace Player
         public float m_BobSpeed = 1;
         public float m_BobDistance = 1;
 
+        [Header("Weapons")]
         public Weapon m_weapon1;
         public Weapon m_weapon2;
 
-        public GameObject m_hitMarker;
-
-        [Header("Gizmos")]
-        public float m_hitMarkerSize = 0.25f;
-
-        [Header("References")]
+        [Header("Other References")]
+        public PlayerManager m_PlayerManager;
         public Camera m_mainCamera;
         public Transform m_orientation;
 
-        private float xRotation = 0;
-
+        // Private references.
         private Rigidbody m_rigidbody;
 
-        //private List<Vector3> m_hitMarkers;
-        //private List<GameObject> m_hitMarkersVisual;
+        private float xRotation = 0;
 
 
+        // Public bookkeeping.
+        public bool IsGrounded { get; private set; }
+        private Vector3 m_cacheMoveDirection = Vector3.zero;
+   
+        // Private bookkeeping.
         private float m_fireCounter = 0.0f;
         private bool m_hasFired = false;
-
-        public bool IsGrounded { get; private set; }
-
-
-
-        private Vector3 m_cacheMoveDirection = Vector3.zero;
-        private Vector3 m_cacheJumpThing = Vector3.zero;
 
 
         // Private multipliers to make numbers smaller.
@@ -65,7 +58,6 @@ namespace Player
         public bool m_isMoving { get; private set; }
 
 
-
         // Weapon sway stuff.
         [HideInInspector]
         public float m_SwayTimer = 0.0f;
@@ -73,20 +65,12 @@ namespace Player
         public float m_WaveSlice = 0.0f;
         [HideInInspector]
         public float m_WaveSliceX = 0.0f;
-        [HideInInspector]
-        public Vector3 m_Weapon1MidPoint;
-        [HideInInspector]
-        public Vector3 m_Weapon2MidPoint;
-
-
-        public PlayerManager m_PlayerManager;
 
 
         // Start is called before the first frame update
         void Start()
         {
             Debug.Assert(m_PlayerManager);
-
 
             InputManager.OnLook += Look;
             InputManager.OnMove += Move;
@@ -98,19 +82,6 @@ namespace Player
             m_rigidbody = GetComponent<Rigidbody>();
 
             Cursor.lockState = CursorLockMode.Locked;
-
-            //m_hitMarkers = new List<Vector3>();
-            //m_hitMarkersVisual = new List<GameObject>();
-
-
-            // testing
-            InputManager.OnHorizontalLook += HorizontalLook;
-
-
-            // Cacheing weapon locations.
-            m_Weapon1MidPoint = m_weapon1.transform.localPosition;
-            m_Weapon2MidPoint = m_weapon2.transform.localPosition;
-
 
         }
 
@@ -138,12 +109,6 @@ namespace Player
             WeaponBob();
         }
 
-        private void FixedUpdate()
-        {
-
-
-
-        }
 
         public void Look(float xDelta, float yDelta)
         {
@@ -162,11 +127,6 @@ namespace Player
             m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, desiredX, 0);
             m_orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
 
-        }
-
-        public void HorizontalLook(float xDelta)
-        {
-            //m_rigidbody.rotation *= Quaternion.Euler(Vector3.up * xDelta * 1.9f);
         }
 
         public void Move(float x, float z)
@@ -191,11 +151,12 @@ namespace Player
             {
                 Ray ray = new Ray(m_mainCamera.transform.position, m_mainCamera.transform.forward);
                 RaycastHit hit;
+                Weapon currentWeapon = PlayerUtilities.GetCurrentWeapon();
                 if (Physics.Raycast(ray, out hit))
                 {
                     if (hit.transform.gameObject != null)
                     {
-                        Decal newDecal = new Decal(hit.transform, hit.point, m_hitMarker, hit.normal);
+                        Decal newDecal = new Decal(hit.transform, hit.point, currentWeapon.m_HitDecal, hit.normal);
                         GameManager.Instance.AddDecal(newDecal);
 
                         m_hasFired = true;
@@ -300,8 +261,8 @@ namespace Player
             else
             {
                 m_SwayTimer = 0.0f;
-                localPosition.y = m_Weapon1MidPoint.y;
-                localPosition.x = m_Weapon1MidPoint.x;
+                localPosition.y = currentWeaponMidPoint.y;
+                localPosition.x = currentWeaponMidPoint.x;
                 currentWeapon.transform.localPosition = Vector3.Lerp(currentWeapon.transform.localPosition, currentWeapon.m_MidPoint, 0.01f);
             }
 

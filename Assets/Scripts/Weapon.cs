@@ -6,10 +6,9 @@ namespace Combat
 {
     public class Weapon : MonoBehaviour
     {
-
+        public float m_BulletDamage;
+        public GameObject m_HitDecal;
         public Vector3 m_MidPoint { get; private set; }
-
-
 
         // Start is called before the first frame update
         void Start()

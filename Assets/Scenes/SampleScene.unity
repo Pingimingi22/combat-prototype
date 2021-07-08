@@ -478,6 +478,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571a181a8e48b984cb05504a8a3061e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_BulletDamage: 0
+  m_HitDecal: {fileID: 1995180151107488026, guid: 1209b5b82346bd646842582834e073a6, type: 3}
 --- !u!1001 &365011337
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1091,16 +1093,12 @@ MonoBehaviour:
   m_BobDistance: 0.05
   m_weapon1: {fileID: 3442332280220956686}
   m_weapon2: {fileID: 348580889}
-  m_hitMarker: {fileID: 1995180151107488026, guid: 1209b5b82346bd646842582834e073a6, type: 3}
-  m_hitMarkerSize: 0.25
+  m_PlayerManager: {fileID: 594497749}
   m_mainCamera: {fileID: 963194227}
   m_orientation: {fileID: 423651345}
   m_SwayTimer: 0
   m_WaveSlice: 0
   m_WaveSliceX: 0
-  m_Weapon1MidPoint: {x: 0, y: 0, z: 0}
-  m_Weapon2MidPoint: {x: 0, y: 0, z: 0}
-  m_PlayerManager: {fileID: 594497749}
 --- !u!54 &594497748
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3414,6 +3412,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571a181a8e48b984cb05504a8a3061e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_BulletDamage: 0
+  m_HitDecal: {fileID: 1995180151107488026, guid: 1209b5b82346bd646842582834e073a6, type: 3}
 --- !u!1001 &4199725066062355861
 PrefabInstance:
   m_ObjectHideFlags: 0

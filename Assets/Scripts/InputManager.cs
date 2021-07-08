@@ -16,10 +16,6 @@ public class InputManager : MonoBehaviour
     /// <summary>Event which handles looking.</summary>
     public static event KeyboardLookEvent OnLook;
 
-    public delegate void KeyboardLookHorizontalEvent(float x);
-
-    public static event KeyboardLookHorizontalEvent OnHorizontalLook;
-
     /// <summary>Delegate which handles weapon firing.</summary>
     public delegate void KeyboardFireEvent(bool active);
 
@@ -81,7 +77,5 @@ public class InputManager : MonoBehaviour
 	private void FixedUpdate()
 	{
         OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        // testing
-        OnHorizontalLook?.Invoke(Input.GetAxisRaw("Mouse X"));
     }
 }
