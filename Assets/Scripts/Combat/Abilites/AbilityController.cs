@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class AbilityController : MonoBehaviour
 {
-    public Ability m_Ability;
+    public Ability m_Ability1;
+    public Ability m_Ability2;
+    public Ability m_Ability3;
+
+    public KeyCode m_Ability1Key;
+    public KeyCode m_Ability2Key;
+    public KeyCode m_Ability3Key;
+
     // Start is called before the first frame update
     void Start()
     {
