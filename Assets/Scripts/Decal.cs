@@ -28,9 +28,6 @@ namespace CombatUtilities
             m_Decal.transform.LookAt(localPos + m_objAttached.TransformVector(m_Dir));
             localPos += m_objAttached.TransformVector(m_Dir) * 0.009f;
             m_Decal.transform.position = localPos;
-
-            
-
         }
 
         public void DrawGizmo()
