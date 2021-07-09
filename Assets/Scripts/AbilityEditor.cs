@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using Abilities;
 
 
 namespace PrototypeEditorTools
 {
-    public enum AbilityBehaviour
+    public enum AbilityType
     { 
         LUNGE,
         ICARUS,
@@ -21,7 +21,12 @@ namespace PrototypeEditorTools
     {
         // =========== Generic Settings =========== //
         private string m_name = "Default Ablitity";
-        private AbilityBehaviour m_behaviour;
+        private AbilityType m_behaviour;
+        private AbilityType m_Behaviour1;
+        private AbilityType m_Behaviour2;
+        private AbilityType m_Behaviour3;
+        private AbilityType m_Behaviour4;
+
         private float m_Cooldown;
         // ======================================== //
 
@@ -54,7 +59,7 @@ namespace PrototypeEditorTools
 
 
             m_name = EditorGUILayout.TextField("Ability Name:", m_name);
-            m_behaviour = (AbilityBehaviour)EditorGUILayout.EnumPopup("Ability Behaviour:", m_behaviour);
+            m_behaviour = (AbilityType)EditorGUILayout.EnumPopup("Ability Behaviour:", m_behaviour);
             m_Cooldown = EditorGUILayout.FloatField("Cooldown:", m_Cooldown);
             EditorGUILayout.Separator();
 
@@ -88,26 +93,12 @@ namespace PrototypeEditorTools
         }
 
 
-        private string GetAbilityType(AbilityBehaviour behaviour)
+        private string GetAbilityType(AbilityType behaviour)
         {
             switch (behaviour)
             {
-                case AbilityBehaviour.DRAIN:
-                    return "AbilityDrain";
-                case AbilityBehaviour.EXPLOSION:
-                    return "AbilityExplosion";
-                case AbilityBehaviour.ICARUS:
-                    return "AbilityIcarus";
-                case AbilityBehaviour.LUNGE:
-                    return "AbilityLunge";
-                case AbilityBehaviour.SPEED:
-                    return "AbilitySpeed";
-                case AbilityBehaviour.STRENGTH:
-                    return "AbilityStrength";
-                case AbilityBehaviour.TELEPORT:
-                    return "AbilityTeleport";
-                default:
-                    return "ERROR";
+                default: 
+                   return "Ability";
             }
         }
 
@@ -123,24 +114,24 @@ namespace PrototypeEditorTools
             EditorGUILayout.EndToggleGroup();
         }
 
-        private void DisplaySpecificSettings(AbilityBehaviour behaviour)
+        private void DisplaySpecificSettings(AbilityType behaviour)
         {
             switch (behaviour)
             {
-                case AbilityBehaviour.DRAIN:
+                case AbilityType.DRAIN:
                     break;
-                case AbilityBehaviour.EXPLOSION:
+                case AbilityType.EXPLOSION:
                     break;
-                case AbilityBehaviour.ICARUS:
+                case AbilityType.ICARUS:
                     break;
-                case AbilityBehaviour.LUNGE:
+                case AbilityType.LUNGE:
                     DisplayLunge();
                     break;
-                case AbilityBehaviour.SPEED:
+                case AbilityType.SPEED:
                     break;
-                case AbilityBehaviour.STRENGTH:
+                case AbilityType.STRENGTH:
                     break;
-                case AbilityBehaviour.TELEPORT:
+                case AbilityType.TELEPORT:
                     break;
                 default:
                     break;
@@ -149,29 +140,29 @@ namespace PrototypeEditorTools
 
         private void SaveObject(ScriptableObject obj)
         {
-            ((Ability)obj).m_AbilityName = m_name;
-            ((Ability)obj).m_Behaviour = m_behaviour;
-            ((Ability)obj).m_Cooldown = m_Cooldown;
+            //((Ability)obj).m_AbilityName = m_name;
+            //((Ability)obj).m_Behaviour0 = m_behaviour;
+            //((Ability)obj).m_Cooldown = m_Cooldown;
 
 
             switch (m_behaviour)
             {
-                case AbilityBehaviour.DRAIN:
+                case AbilityType.DRAIN:
                     break;
-                case AbilityBehaviour.EXPLOSION:
+                case AbilityType.EXPLOSION:
                     break;
-                case AbilityBehaviour.ICARUS:
+                case AbilityType.ICARUS:
                     break;
-                case AbilityBehaviour.LUNGE:
-                    ((AbilityLunge)obj).m_LungeForce = m_LungeForce;
-                    ((AbilityLunge)obj).m_HasAreaDamage = m_LungeHasAreaDamage;
-                    ((AbilityLunge)obj).m_AreaDamage = m_LungeAreaDamage;
+                case AbilityType.LUNGE:
+                    //((AbilityLunge)obj).m_LungeForce = m_LungeForce;
+                    //((AbilityLunge)obj).m_HasAreaDamage = m_LungeHasAreaDamage;
+                    //((AbilityLunge)obj).m_AreaDamage = m_LungeAreaDamage;
                     break;
-                case AbilityBehaviour.SPEED:
+                case AbilityType.SPEED:
                     break;
-                case AbilityBehaviour.STRENGTH:
+                case AbilityType.STRENGTH:
                     break;
-                case AbilityBehaviour.TELEPORT:
+                case AbilityType.TELEPORT:
                     break;
                 default:
                     break;
