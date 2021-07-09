@@ -3,29 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Abilities;
-
+using UIUtilities;
 
 namespace PrototypeEditorTools
 {
     public enum AbilityType
     { 
         LUNGE,
-        ICARUS,
-        TELEPORT,
         EXPLOSION,
         SPEED,
         STRENGTH,
         DRAIN,
+        NULL
     }
     public class AbilityEditor : EditorWindow
     {
         // =========== Generic Settings =========== //
         private string m_name = "Default Ablitity";
-        private AbilityType m_behaviour;
-        private AbilityType m_Behaviour1;
-        private AbilityType m_Behaviour2;
-        private AbilityType m_Behaviour3;
-        private AbilityType m_Behaviour4;
+        private AbilityBehaviour m_Behaviour0 = new AbilityBehaviour();
+        private AbilityBehaviour m_Behaviour1 = new AbilityBehaviour();
+        private AbilityBehaviour m_Behaviour2 = new AbilityBehaviour();
+        private AbilityBehaviour m_Behaviour3 = new AbilityBehaviour();
+        private AbilityBehaviour m_Behaviour4 = new AbilityBehaviour();
 
         private float m_Cooldown;
         // ======================================== //
@@ -41,42 +40,41 @@ namespace PrototypeEditorTools
         {
             AbilityEditor window = (AbilityEditor)EditorWindow.GetWindow(typeof(AbilityEditor));
             window.Show();
-            window.minSize = new Vector2(500, 500);
-            window.maxSize = new Vector2(500, 500);
+            window.minSize = new Vector2(500, 800);
+            window.maxSize = new Vector2(500, 800);
+
+            IMGUIUtilities.Init();
         }
 
         private void OnGUI()
         {
-            GUIStyle testStyle = new GUIStyle();
-            testStyle.fontSize = 35;
-            testStyle.alignment = TextAnchor.UpperCenter;
-            testStyle.fontStyle = FontStyle.Bold;
-            testStyle.normal.textColor = Color.white;
-
-
-            GUILayout.Label("Ability Creator", testStyle);
+            GUILayout.Label("Ability Creator", IMGUIUtilities.m_Header);
             GUILayout.Label("Generic Settings:", EditorStyles.boldLabel);
 
 
             m_name = EditorGUILayout.TextField("Ability Name:", m_name);
-            m_behaviour = (AbilityType)EditorGUILayout.EnumPopup("Ability Behaviour:", m_behaviour);
             m_Cooldown = EditorGUILayout.FloatField("Cooldown:", m_Cooldown);
             EditorGUILayout.Separator();
+            EditorGUILayout.Space(25);
+            GUILayout.Label("Behaviours", IMGUIUtilities.m_Subheader);
 
-            DisplaySpecificSettings(m_behaviour);
+            DisplayGenericBehaviour(m_Behaviour0);
+            DisplayGenericBehaviour(m_Behaviour1);
+            DisplayGenericBehaviour(m_Behaviour2);
+            DisplayGenericBehaviour(m_Behaviour3);
+            DisplayGenericBehaviour(m_Behaviour4);
 
             if (GUILayout.Button("Create Ability"))
             {
                 string path = "Assets/" + m_name + ".asset";
 
-                string className = GetAbilityType(m_behaviour);
-                CreateAbility(m_name, path, className);
+                CreateAbility(m_name, path);
             }
         }
 
-        private void CreateAbility(string name, string path, string className)
+        private void CreateAbility(string name, string path)
         {
-            ScriptableObject testAbility = ScriptableObject.CreateInstance(className);
+            ScriptableObject testAbility = ScriptableObject.CreateInstance("Ability");
     
             if (AssetDatabase.FindAssets(name).Length == 0)
             {
@@ -122,16 +120,12 @@ namespace PrototypeEditorTools
                     break;
                 case AbilityType.EXPLOSION:
                     break;
-                case AbilityType.ICARUS:
-                    break;
                 case AbilityType.LUNGE:
                     DisplayLunge();
                     break;
                 case AbilityType.SPEED:
                     break;
                 case AbilityType.STRENGTH:
-                    break;
-                case AbilityType.TELEPORT:
                     break;
                 default:
                     break;
@@ -140,33 +134,39 @@ namespace PrototypeEditorTools
 
         private void SaveObject(ScriptableObject obj)
         {
-            //((Ability)obj).m_AbilityName = m_name;
-            //((Ability)obj).m_Behaviour0 = m_behaviour;
-            //((Ability)obj).m_Cooldown = m_Cooldown;
+           // ((Ability)obj).m_AbilityName = m_name;
+           // ((Ability)obj).m_Behaviour0 = m_behaviour;
+           // ((Ability)obj).m_Cooldown = m_Cooldown;
+           //
+           //
+           // switch (m_behaviour)
+           // {
+           //     case AbilityType.DRAIN:
+           //         break;
+           //     case AbilityType.EXPLOSION:
+           //         break;
+           //     case AbilityType.LUNGE:
+           //         //((AbilityLunge)obj).m_LungeForce = m_LungeForce;
+           //         //((AbilityLunge)obj).m_HasAreaDamage = m_LungeHasAreaDamage;
+           //         //((AbilityLunge)obj).m_AreaDamage = m_LungeAreaDamage;
+           //         break;
+           //     case AbilityType.SPEED:
+           //         break;
+           //     case AbilityType.STRENGTH:
+           //         break;
+           //     default:
+           //         break;
+           // }
+        }
 
-
-            switch (m_behaviour)
-            {
-                case AbilityType.DRAIN:
-                    break;
-                case AbilityType.EXPLOSION:
-                    break;
-                case AbilityType.ICARUS:
-                    break;
-                case AbilityType.LUNGE:
-                    //((AbilityLunge)obj).m_LungeForce = m_LungeForce;
-                    //((AbilityLunge)obj).m_HasAreaDamage = m_LungeHasAreaDamage;
-                    //((AbilityLunge)obj).m_AreaDamage = m_LungeAreaDamage;
-                    break;
-                case AbilityType.SPEED:
-                    break;
-                case AbilityType.STRENGTH:
-                    break;
-                case AbilityType.TELEPORT:
-                    break;
-                default:
-                    break;
-            }
+        private void DisplayGenericBehaviour(AbilityBehaviour behaviour)
+        {
+            behaviour.m_Type = (AbilityType)EditorGUILayout.EnumPopup("Ability Type", behaviour.m_Type);
+            behaviour.m_Duration = EditorGUILayout.FloatField("Duration", behaviour.m_Duration);
+            behaviour.m_IsDelayed = EditorGUILayout.BeginToggleGroup("Delayed Cast", behaviour.m_IsDelayed);
+            behaviour.m_StartTime = EditorGUILayout.FloatField("Behaviour Start Time", behaviour.m_StartTime);
+            EditorGUILayout.EndToggleGroup();
+            EditorGUILayout.Space(25);
         }
 	}
 }

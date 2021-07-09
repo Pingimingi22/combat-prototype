@@ -6,10 +6,10 @@ using System;
 
 namespace Abilities
 {
-[Serializable]
+[System.Serializable]
     public class AbilityBehaviour
     {
-        public AbilityType m_Type;
+        public AbilityType m_Type = AbilityType.NULL;
         public float m_Duration;
         public bool m_IsDelayed;
         public float m_StartTime;
@@ -20,6 +20,11 @@ namespace Abilities
         public bool m_IsFinished = false;
 
         private float m_Counter = 0.0f; // For internal tracking.
+
+        public AbilityBehaviour()
+        {
+            Debug.Log("AbilityBehaviour constructor called.");
+        }
 
         public void Invoke()
         {
