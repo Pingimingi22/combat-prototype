@@ -13,6 +13,12 @@ MonoBehaviour:
   m_Name: Default Ablitity
   m_EditorClassIdentifier: 
   m_AbilityName: 
-  m_AllBehaviours: []
+  m_AllBehaviours:
+  - m_Type: 0
+    m_Duration: 0
+    m_IsDelayed: 0
+    m_StartTime: 0
+    m_AbilityRef: {fileID: 11400000}
+    m_Active: 0
+    m_IsFinished: 0
   m_Cooldown: 0
-  m_InstantAction: 0

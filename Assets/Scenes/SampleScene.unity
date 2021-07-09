@@ -1367,12 +1367,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e166cd9a3782bb84c8e0e0a2d9a68c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Ability1: {fileID: 0}
+  m_Ability1: {fileID: 11400000, guid: f5ee28f8aa8cfb74b9ea39a871340e67, type: 2}
   m_Ability2: {fileID: 0}
   m_Ability3: {fileID: 0}
   m_Ability1Key: 113
   m_Ability2Key: 0
   m_Ability3Key: 0
+  m_Rigidbody: {fileID: 0}
 --- !u!4 &608086622 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9102137232371891031, guid: 4d254194bf312764eaca8fe435e3cc79, type: 3}

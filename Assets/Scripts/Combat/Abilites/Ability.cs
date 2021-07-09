@@ -17,10 +17,8 @@ namespace Abilities
                                                                                            // This is so I can loop through them all and invoke them at the right time.
 
         public float m_Cooldown;
-        private float m_Counter; // For internal tracking.
-
-        [Tooltip("If checked yes, this ability is supposed to be used once and instantly, otherwise its a long lasting ability.")]
-        public bool m_InstantAction;
+        private float m_Counter = 0.0f; // For internal tracking.
+        private bool m_Charging = false; // For internal tracking.
 
         // More internal tracking.
         private bool m_Active = false;
@@ -30,32 +28,34 @@ namespace Abilities
         {
             Debug.Log("Ability Awake() function called.");
             InitDelayedBehaviours();
+            InitBehaviours();
+
         }
-        public void Update()
+        public void UpdateBehaviours(Rigidbody rigidbody)
         {
             if (m_Active)
             {
-                InvokeLongLasting();
+                bool behavioursFinished = true;
+
+                for (int i = 0; i < m_AllBehaviours.Count; i++)
+                { 
+                    m_AllBehaviours[i].Invoke();
+                    if (!m_AllBehaviours[i].m_IsFinished)
+                        behavioursFinished = false;
+                }
+
+                if (behavioursFinished)
+                { 
+                    m_Active = false;
+                    m_Charging = true;
+                }
             }
         }
-        public void Invoke()
+        public void Invoke(Rigidbody rigidbody)
         {
             // Do all actions.
             m_Active = true;
         }
-
-        private void InvokeLongLasting()
-        {
-            // Will keep invoking the behaviours that require multiple frames.
-            for (int i = 0; i < m_DelayedBehaviours.Count; i++)
-            { 
-                
-            }
-        }
-
-        private void InvokeDelayedBehaviour()
-        { }
-
        
         private void InitDelayedBehaviours()
         {
@@ -63,6 +63,14 @@ namespace Abilities
             {
                 if (m_AllBehaviours[i].m_IsDelayed)
                     m_DelayedBehaviours.Add(m_AllBehaviours[i]);
+            }
+        }
+
+        private void InitBehaviours()
+        {
+            for (int i = 0; i < m_AllBehaviours.Count; i++)
+            {
+                m_AllBehaviours[i].m_AbilityRef = this;
             }
         }
     }

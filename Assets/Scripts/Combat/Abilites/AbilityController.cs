@@ -14,16 +14,23 @@ namespace Abilities
         public KeyCode m_Ability2Key;
         public KeyCode m_Ability3Key;
 
-        // Start is called before the first frame update
-        void Start()
-        {
+        public Rigidbody m_Rigidbody;
 
+        // Start is called before the first frame update
+        public void Start()
+        {
+            if (m_Rigidbody == null)
+                m_Rigidbody = GetComponent<Rigidbody>();
+
+            Debug.Assert(m_Rigidbody); // Make sure it's set to something now.
         }
 
         // Update is called once per frame
-        void Update()
+        public void Update()
         {
-
+            m_Ability1.UpdateBehaviours(m_Rigidbody);
+            m_Ability2.UpdateBehaviours(m_Rigidbody);
+            m_Ability3.UpdateBehaviours(m_Rigidbody);
         }
     }
 }
