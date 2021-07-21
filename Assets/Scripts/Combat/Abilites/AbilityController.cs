@@ -28,9 +28,9 @@ namespace Abilities
         // Update is called once per frame
         public void Update()
         {
-            m_Ability1.UpdateBehaviours(m_Rigidbody);
-            m_Ability2.UpdateBehaviours(m_Rigidbody);
-            m_Ability3.UpdateBehaviours(m_Rigidbody);
+            //m_Ability1.UpdateBehaviours(m_Rigidbody);
+            //m_Ability2.UpdateBehaviours(m_Rigidbody);
+            //m_Ability3.UpdateBehaviours(m_Rigidbody);
         }
     }
 }

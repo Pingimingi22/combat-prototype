@@ -19,6 +19,7 @@ public class DebugUIHandler : MonoBehaviour
     [Header("Movement")]
     public Text m_moveSpeedText;
     public Text m_isMovingText;
+    public Text m_YVelocityText;
     
     private bool m_Toggle = true;
 
@@ -56,6 +57,7 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<string>(PlayerManager.m_CurrentWeapon.ToString(), "CurrentWeaponSlot", m_CurrentWeaponSlotText);
         GraphicalDebugger.Assign<float>(PlayerManager.s_Health, "Health", m_CurrentHealthText);
         GraphicalDebugger.Assign<float>(PlayerManager.s_MaxHealth, "MaxHealth", m_CurrentMaxHealthText);
+        GraphicalDebugger.Assign<float>(m_playerController.Rigidbody.velocity.y, "YVelocity", m_YVelocityText);
     }
 
     public void Toggle(bool active)

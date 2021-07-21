@@ -1315,7 +1315,7 @@ MonoBehaviour:
   m_groundCheckHeight: 0.67
   m_groundCheckRadius: 0.39
   m_Gravity: -9.8
-  m_maxSpeed: 5
+  m_maxSpeed: 10
   m_BobSpeed: 5
   m_BobDistance: 0.05
   m_weapon1: {fileID: 3442332280220956686}
@@ -1367,7 +1367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e166cd9a3782bb84c8e0e0a2d9a68c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Ability1: {fileID: 11400000, guid: f5ee28f8aa8cfb74b9ea39a871340e67, type: 2}
+  m_Ability1: {fileID: 0}
   m_Ability2: {fileID: 0}
   m_Ability3: {fileID: 0}
   m_Ability1Key: 113

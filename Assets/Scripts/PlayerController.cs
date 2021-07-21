@@ -34,7 +34,7 @@ namespace Player
         public Transform m_orientation;
 
         // Private references.
-        private Rigidbody m_rigidbody;
+        public Rigidbody Rigidbody { get; private set; }
 
         private float xRotation = 0;
 
@@ -79,7 +79,7 @@ namespace Player
             InputManager.OnSelect1 += WeaponSelect1;
             InputManager.OnSelect2 += WeaponSelect2;
 
-            m_rigidbody = GetComponent<Rigidbody>();
+            Rigidbody = GetComponent<Rigidbody>();
 
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -101,10 +101,10 @@ namespace Player
             IsGrounded = CheckGrounded();
 
             // Making sure angular velocity isn't a problem.
-            m_rigidbody.velocity = new Vector3(m_cacheMoveDirection.x, m_rigidbody.velocity.y, m_cacheMoveDirection.z);
-            m_rigidbody.angularVelocity = Vector3.zero;
+            Rigidbody.velocity = new Vector3(m_cacheMoveDirection.x, Rigidbody.velocity.y, m_cacheMoveDirection.z);
+            Rigidbody.angularVelocity = Vector3.zero;
 
-            m_currentMoveSpeed = m_rigidbody.velocity.magnitude;
+            m_currentMoveSpeed = Rigidbody.velocity.magnitude;
 
             WeaponBob();
         }
@@ -131,18 +131,52 @@ namespace Player
 
         public void Move(float x, float z)
         {
-            Vector3 moveDirection = transform.right * x + transform.forward * z;
-
-            Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
-            Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
-
-            m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime) + new Vector3(0, m_rigidbody.velocity.y, 0);
-
-
-            // Tracking whether we are moving or not.
             m_isMoving = false;
             if (x != 0 || z != 0)
                 m_isMoving = true;
+
+
+            if (!IsGrounded)
+            {
+                // Slightly weaker movement.
+                   m_cacheMoveDirection = m_cacheMoveDirection + CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+            
+            }
+            else
+            {
+                // Full on movement.
+
+                Vector3 moveDirection = transform.right * x + transform.forward * z;
+                
+                Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
+                Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
+                
+                //m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime)/* + new Vector3(0, m_rigidbody.velocity.y, 0)*/;
+
+                m_cacheMoveDirection = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+               
+            }
+
+            if (m_cacheMoveDirection.magnitude > 10)
+            {
+                m_cacheMoveDirection = m_cacheMoveDirection.normalized * m_maxSpeed;
+                Debug.Log("============== Surpassed max move speed: " + m_cacheMoveDirection);
+            }
+
+        }
+
+        private Vector3 CalcuateMoveDirection(float x, float z, float speedMultiplier)
+        {
+            Vector3 moveDir = new Vector3();
+
+            moveDir = transform.right * x + transform.forward * z;
+
+            Vector3 xMov = new Vector3(x * m_orientation.right.x, 0, x * m_orientation.right.z);
+            Vector3 zMov = new Vector3(z * m_orientation.forward.x, 0, z * m_orientation.forward.z);
+
+            moveDir = ((xMov + zMov).normalized * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
+
+            return moveDir;
         }
 
         public void Shoot(bool active)
@@ -176,10 +210,10 @@ namespace Player
             if (active && IsGrounded)
             {
                 //m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-                m_cacheMoveDirection = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, m_rigidbody.mass, m_Gravity);
-                m_cacheMoveDirection.x = m_rigidbody.velocity.x;
-                m_cacheMoveDirection.z = m_rigidbody.velocity.z;
-                m_rigidbody.velocity = m_cacheMoveDirection;
+                m_cacheMoveDirection = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, Rigidbody.mass, m_Gravity);
+                m_cacheMoveDirection.x = Rigidbody.velocity.x;
+                m_cacheMoveDirection.z = Rigidbody.velocity.z;
+                Rigidbody.velocity = m_cacheMoveDirection;
             }
         }
 
@@ -276,12 +310,12 @@ namespace Player
         public Vector2 FindVelRelativeToLook()
         {
             float lookAngle = m_orientation.transform.eulerAngles.y;
-            float moveAngle = Mathf.Atan2(m_rigidbody.velocity.x, m_rigidbody.velocity.z) * Mathf.Rad2Deg;
+            float moveAngle = Mathf.Atan2(Rigidbody.velocity.x, Rigidbody.velocity.z) * Mathf.Rad2Deg;
 
             float u = Mathf.DeltaAngle(lookAngle, moveAngle);
             float v = 90 - u;
 
-            float magnitude = m_rigidbody.velocity.magnitude;
+            float magnitude = Rigidbody.velocity.magnitude;
             float yMag = magnitude * Mathf.Cos(u * Mathf.Deg2Rad);
             float xMag = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
 
