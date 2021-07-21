@@ -76,6 +76,6 @@ public class InputManager : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-        OnMove?.Invoke(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        OnMove?.Invoke(Input.GetAxisRaw("Horizontal"), Input.GetAxis("Vertical"));
     }
 }

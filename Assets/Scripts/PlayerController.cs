@@ -134,6 +134,16 @@ namespace Player
             m_isMoving = false;
             if (x != 0 || z != 0)
                 m_isMoving = true;
+            else
+            {
+
+
+               Debug.Log("move direction:" + m_cacheMoveDirection);
+               
+               
+               m_cacheMoveDirection.x = Mathf.Clamp(m_cacheMoveDirection.x, 0, 15);
+               m_cacheMoveDirection.z = Mathf.Clamp(m_cacheMoveDirection.z, 0, 15);
+            }
 
 
             if (!IsGrounded)
@@ -153,14 +163,14 @@ namespace Player
                 
                 //m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime)/* + new Vector3(0, m_rigidbody.velocity.y, 0)*/;
 
-                m_cacheMoveDirection = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+                m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
                
             }
 
-            if (m_cacheMoveDirection.magnitude > 10)
+            if (m_cacheMoveDirection.magnitude > 15)
             {
-                m_cacheMoveDirection = m_cacheMoveDirection.normalized * m_maxSpeed;
-                Debug.Log("============== Surpassed max move speed: " + m_cacheMoveDirection);
+                m_cacheMoveDirection = m_cacheMoveDirection.normalized * 15;
+                //Debug.Log("============== Surpassed max move speed: " + m_cacheMoveDirection);
             }
 
         }
@@ -246,6 +256,13 @@ namespace Player
             }
 
             Gizmos.color = defaultColour;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(-m_cacheMoveDirection.x, m_cacheMoveDirection.y, -m_cacheMoveDirection.z));
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(m_cacheMoveDirection.x, m_cacheMoveDirection.y, m_cacheMoveDirection.z));
+
         }
 
         public void WeaponSelect1(bool active)
@@ -321,5 +338,7 @@ namespace Player
 
             return new Vector2(xMag, yMag);
         }
+
+        
     }
 }
