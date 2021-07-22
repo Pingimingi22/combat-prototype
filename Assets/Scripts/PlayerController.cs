@@ -96,6 +96,8 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            Debug.Log(transform.position.y);
+
             if (m_hasFired)
             {
                 m_fireCounter += Time.deltaTime;
@@ -111,6 +113,11 @@ namespace Player
             // Making sure angular velocity isn't a problem.
             m_Rigidbody.velocity = new Vector3(CacheMovDir.x, m_Rigidbody.velocity.y, CacheMovDir.z);
             m_Rigidbody.angularVelocity = Vector3.zero;
+
+            if (m_Rigidbody.velocity.y < 0)
+            {
+                m_Rigidbody.velocity += Vector3.up * Physics.gravity.y * 1.5f * Time.deltaTime;
+            }
 
             m_currentMoveSpeed = m_Rigidbody.velocity.magnitude;
 
@@ -153,7 +160,7 @@ namespace Player
 
                 Vector3 requiredChange = desiredVel - currentVel;
 
-                CacheMovDir += requiredChange * m_AirAcceleration;
+                CacheMovDir += (requiredChange * m_AirAcceleration);
 
             }
             else

@@ -1725,10 +1725,10 @@ MonoBehaviour:
   m_moveSpeed: 500
   m_fireRate: 0.1
   m_bulletForce: 20
-  m_JumpHeight: 1
+  m_JumpHeight: 2
   m_groundCheckHeight: 0.67
   m_groundCheckRadius: 0.39
-  m_Gravity: -9.8
+  m_Gravity: -9.81
   m_maxSpeed: 10
   m_BobSpeed: 5
   m_BobDistance: 0.05
@@ -1759,7 +1759,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &594497749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1788,9 +1788,6 @@ MonoBehaviour:
   m_Ability1: {fileID: 11400000, guid: 248463be42c112d4b8b5a2ad6961ce7c, type: 2}
   m_Ability2: {fileID: 11400000, guid: b464d1b4cfb852640b950db2036fd692, type: 2}
   m_Ability3: {fileID: 11400000, guid: 8c929d589c84a0246a4a8da04cdaa3a1, type: 2}
-  m_Ability1Key: 113
-  m_Ability2Key: 0
-  m_Ability3Key: 0
   m_Rigidbody: {fileID: 0}
   m_AbilityIcon1: {fileID: 1404834800}
   m_AbilityIcon2: {fileID: 96270880}
