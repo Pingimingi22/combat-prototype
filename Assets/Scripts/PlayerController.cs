@@ -26,20 +26,25 @@ namespace Player
         public float m_GroundAcceleration = 0.3f;
         public float m_AirAcceleration = 0.1f;
 
-        [Header("Weapons")]
-        public Weapon m_weapon1;
-        public Weapon m_weapon2;
 
+        
+
+        [Header("Weapons")]                    // ================ NOTE ================ //
+        public Weapon m_weapon1;               // Weapons here will be replaced by another
+        public Weapon m_weapon2;               // system. It is here for testing reasons.
+                                               // ====================================== //
         [Header("Other References")]
         public PlayerManager m_PlayerManager;
         public Camera m_mainCamera;
         public Transform m_orientation;
+        public Rigidbody m_Rigidbody;
+
 
         // Private references.
-        public Rigidbody Rigidbody { get; private set; }
-
         private float xRotation = 0;
 
+
+        // ================== BOOKKEEPING STUFF ================== //
 
         // Public bookkeeping.
         public bool IsGrounded { get; private set; }
@@ -48,10 +53,8 @@ namespace Player
         // Private bookkeeping.
         private float m_fireCounter = 0.0f;
         private bool m_hasFired = false;
+        // ======================================================= //
 
-
-        // Private multipliers to make numbers smaller.
-        private float m_speedMultiplier = 1000;
 
         // Exposed variables for debugging.
         [HideInInspector]
@@ -60,20 +63,18 @@ namespace Player
         public bool m_isMoving { get; private set; }
 
 
-        // Weapon sway stuff.
+
+        // ========================== TEMPORARY WEAPON SWAY ========================== //
+        // This weapon sway stuff is here for now since we haven't got animations in yet.
+        // It will be replaced soon.
+       
         [HideInInspector]
         public float m_SwayTimer = 0.0f;
         [HideInInspector]
         public float m_WaveSlice = 0.0f;
         [HideInInspector]
         public float m_WaveSliceX = 0.0f;
-
-
-
-        // Tween progression. Properly organise this later.
-        public float m_TweenProgression = 0;
-
-
+        // ========================================================================== //
 
         // Start is called before the first frame update
         void Start()
@@ -87,10 +88,9 @@ namespace Player
             InputManager.OnSelect1 += WeaponSelect1;
             InputManager.OnSelect2 += WeaponSelect2;
 
-            Rigidbody = GetComponent<Rigidbody>();
+            m_Rigidbody = GetComponent<Rigidbody>();
 
             Cursor.lockState = CursorLockMode.Locked;
-
         }
 
         // Update is called once per frame
@@ -109,10 +109,10 @@ namespace Player
             IsGrounded = CheckGrounded();
 
             // Making sure angular velocity isn't a problem.
-            Rigidbody.velocity = new Vector3(CacheMovDir.x, Rigidbody.velocity.y, CacheMovDir.z);
-            Rigidbody.angularVelocity = Vector3.zero;
+            m_Rigidbody.velocity = new Vector3(CacheMovDir.x, m_Rigidbody.velocity.y, CacheMovDir.z);
+            m_Rigidbody.angularVelocity = Vector3.zero;
 
-            m_currentMoveSpeed = Rigidbody.velocity.magnitude;
+            m_currentMoveSpeed = m_Rigidbody.velocity.magnitude;
 
             WeaponBob();
         }
@@ -179,7 +179,7 @@ namespace Player
             Vector3 xMov = new Vector3(x * m_orientation.right.x, 0, x * m_orientation.right.z);
             Vector3 zMov = new Vector3(z * m_orientation.forward.x, 0, z * m_orientation.forward.z);
 
-            moveDir = ((xMov + zMov).normalized * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
+            moveDir = ((xMov + zMov).normalized * speedMultiplier * Time.deltaTime) + new Vector3(0, m_Rigidbody.velocity.y, 0);
 
             return moveDir;
         }
@@ -214,11 +214,10 @@ namespace Player
         {
             if (active && IsGrounded)
             {
-                //m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-                CacheMovDir = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, Rigidbody.mass, m_Gravity);
-                CacheMovDir.x = Rigidbody.velocity.x;
-                CacheMovDir.z = Rigidbody.velocity.z;
-                Rigidbody.velocity = CacheMovDir;
+                CacheMovDir = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, m_Rigidbody.mass, m_Gravity);
+                CacheMovDir.x = m_Rigidbody.velocity.x;
+                CacheMovDir.z = m_Rigidbody.velocity.z;
+                m_Rigidbody.velocity = CacheMovDir;
             }
         }
 
@@ -232,32 +231,6 @@ namespace Player
                 return true;
             }
             return false;
-        }
-        private void OnDrawGizmos()
-        {
-            Color defaultColour = Gizmos.color;
-
-            RaycastHit hit;
-            Ray ray = new Ray(transform.position, Vector3.down);
-            if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
-            {
-                Gizmos.DrawLine(transform.position, hit.point);
-
-                CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, hit.point, Color.green, m_groundCheckRadius);
-            }
-            else
-            {
-                CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, transform.position + Vector3.down, Color.red, m_groundCheckRadius);
-            }
-
-            Gizmos.color = defaultColour;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + new Vector3(-CacheMovDir.x, CacheMovDir.y, -CacheMovDir.z));
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, transform.position + new Vector3(CacheMovDir.x, CacheMovDir.y, CacheMovDir.z));
-
         }
 
         public void WeaponSelect1(bool active)
@@ -313,6 +286,33 @@ namespace Player
             }
 
         }
-        
+
+        private void OnDrawGizmos()
+        {
+            Color defaultColour = Gizmos.color;
+
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position, Vector3.down);
+            if (Physics.SphereCast(ray, m_groundCheckRadius, out hit, m_groundCheckHeight))
+            {
+                Gizmos.DrawLine(transform.position, hit.point);
+
+                CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, hit.point, Color.green, m_groundCheckRadius);
+            }
+            else
+            {
+                CustomDebug.GraphicalDebugger.DrawSphereCast(transform.position, transform.position + Vector3.down, Color.red, m_groundCheckRadius);
+            }
+
+            Gizmos.color = defaultColour;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(-CacheMovDir.x, CacheMovDir.y, -CacheMovDir.z));
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(CacheMovDir.x, CacheMovDir.y, CacheMovDir.z));
+
+        }
+
     }
 }

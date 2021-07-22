@@ -61,7 +61,7 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<string>(PlayerManager.m_CurrentWeapon.ToString(), "CurrentWeaponSlot", m_CurrentWeaponSlotText);
         GraphicalDebugger.Assign<float>(PlayerManager.s_Health, "Health", m_CurrentHealthText);
         GraphicalDebugger.Assign<float>(PlayerManager.s_MaxHealth, "MaxHealth", m_CurrentMaxHealthText);
-        GraphicalDebugger.Assign<float>(m_playerController.Rigidbody.velocity.y, "YVelocity", m_YVelocityText);
+        GraphicalDebugger.Assign<float>(m_playerController.m_Rigidbody.velocity.y, "YVelocity", m_YVelocityText);
         GraphicalDebugger.Assign<Vector3>(m_playerController.CacheMovDir, "CacheMovDir", m_CacheMovDirText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Horizontal"), "XAxis", m_XAxisText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Vertical"), "ZAxis", m_ZAxisText);
