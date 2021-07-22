@@ -20,7 +20,10 @@ public class DebugUIHandler : MonoBehaviour
     public Text m_moveSpeedText;
     public Text m_isMovingText;
     public Text m_YVelocityText;
-    
+    public Text m_CacheMovDirText;
+    public Text m_XAxisText;
+    public Text m_ZAxisText;
+
     private bool m_Toggle = true;
 
     [Header("Weapon Sway")]
@@ -58,6 +61,9 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<float>(PlayerManager.s_Health, "Health", m_CurrentHealthText);
         GraphicalDebugger.Assign<float>(PlayerManager.s_MaxHealth, "MaxHealth", m_CurrentMaxHealthText);
         GraphicalDebugger.Assign<float>(m_playerController.Rigidbody.velocity.y, "YVelocity", m_YVelocityText);
+        GraphicalDebugger.Assign<Vector3>(m_playerController.CacheMovDir, "CacheMovDir", m_CacheMovDirText);
+        GraphicalDebugger.Assign<float>(Input.GetAxis("Horizontal"), "XAxis", m_XAxisText);
+        GraphicalDebugger.Assign<float>(Input.GetAxis("Vertical"), "ZAxis", m_ZAxisText);
     }
 
     public void Toggle(bool active)
