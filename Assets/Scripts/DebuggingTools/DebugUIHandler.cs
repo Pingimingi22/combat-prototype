@@ -11,6 +11,7 @@ public class DebugUIHandler : MonoBehaviour
 
     [Header("References")]
     public PlayerController m_playerController;
+    public Abilities.AbilityController m_AbilityController;
     public Canvas m_Canvas;
 
     [Header("Jump")]
@@ -23,7 +24,6 @@ public class DebugUIHandler : MonoBehaviour
     public Text m_CacheMovDirText;
     public Text m_XAxisText;
     public Text m_ZAxisText;
-    public Text m_MovementTweenProgressText;
 
     private bool m_Toggle = true;
 
@@ -38,9 +38,20 @@ public class DebugUIHandler : MonoBehaviour
     public Text m_CurrentHealthText;
     public Text m_CurrentMaxHealthText;
 
+    [Header("Combat Abilities")]
+    public Text m_Ability1ActiveText;
+    public Text m_Ability1CounterText;
+
+    public Text m_Ability2ActiveText;
+    public Text m_Ability2CounterText;
+
+    public Text m_Ability3ActiveText;
+    public Text m_Ability3CounterText;
+
     private void Awake()
     {
         Debug.Assert(m_playerController);
+        Debug.Assert(m_AbilityController);
         Debug.Assert(m_Canvas);
     }
 
@@ -65,6 +76,15 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<Vector3>(m_playerController.CacheMovDir, "CacheMovDir", m_CacheMovDirText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Horizontal"), "XAxis", m_XAxisText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Vertical"), "ZAxis", m_ZAxisText);
+
+        GraphicalDebugger.Assign<string>(m_AbilityController.m_Ability1.IsActive().ToString(), "Ability1Active", m_Ability1ActiveText);
+        GraphicalDebugger.Assign<float>(m_AbilityController.m_Ability1.GetCounter(), "Ability1Counter", m_Ability1CounterText);
+
+        GraphicalDebugger.Assign<string>(m_AbilityController.m_Ability2.IsActive().ToString(), "Ability2Active", m_Ability2ActiveText);
+        GraphicalDebugger.Assign<float>(m_AbilityController.m_Ability2.GetCounter(), "Ability2Counter", m_Ability2CounterText);
+
+        GraphicalDebugger.Assign<string>(m_AbilityController.m_Ability3.IsActive().ToString(), "Ability3Active", m_Ability3ActiveText);
+        GraphicalDebugger.Assign<float>(m_AbilityController.m_Ability3.GetCounter(), "Ability3Counter", m_Ability3CounterText);
     }
 
     public void Toggle(bool active)

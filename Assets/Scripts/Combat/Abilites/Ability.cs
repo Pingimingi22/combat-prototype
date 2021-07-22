@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PrototypeEditorTools;
-
+using UnityEngine.UI;
 
 namespace Abilities
 {
-    //[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/AbilityScriptableObject")]
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/AbilityScriptableObject")]
     public class Ability : ScriptableObject
     {
         public string m_AbilityName;
+        public Image m_Icon { get; set; }
 
-        public List<AbilityBehaviour> m_AllBehaviours = new List<AbilityBehaviour>();
-
-        private List<AbilityBehaviour> m_DelayedBehaviours = new List<AbilityBehaviour>(); // Internally tracks all of the behaviours marked as delayed.
-                                                                                           // This is so I can loop through them all and invoke them at the right time.
 
         public float m_Cooldown;
         private float m_Counter = 0.0f; // For internal tracking.
@@ -24,54 +21,47 @@ namespace Abilities
         private bool m_Active = false;
 
 
+        public void SetIcon(Image icon) { m_Icon = icon; }
+        public bool IsActive() { return m_Active; }
+        public float GetCounter() { return m_Counter; }
         private void Awake()
         {
             Debug.Log("Ability Awake() function called.");
-            InitDelayedBehaviours();
-            InitBehaviours();
-
+            
         }
-        public void UpdateBehaviours(Rigidbody rigidbody)
+
+        /// <summary>
+        /// This is not a Unity Update() function so I'm calling it somewhere manually.
+        /// </summary>
+        public void Update()
         {
             if (m_Active)
             {
-                bool behavioursFinished = true;
-
-                for (int i = 0; i < m_AllBehaviours.Count; i++)
-                { 
-                    m_AllBehaviours[i].Invoke();
-                    if (!m_AllBehaviours[i].m_IsFinished)
-                        behavioursFinished = false;
-                }
-
-                if (behavioursFinished)
-                { 
+                // Activate cooldown.
+                m_Counter += Time.deltaTime;
+                if (m_Counter >= m_Cooldown)
+                {
                     m_Active = false;
-                    m_Charging = true;
+                    m_Counter = 0;
                 }
             }
+
+            IconCooldown();
         }
-        public void Invoke(Rigidbody rigidbody)
+
+        public void Invoke(bool inputActive)
         {
             // Do all actions.
-            m_Active = true;
-        }
-       
-        private void InitDelayedBehaviours()
-        {
-            for (int i = 0; i < m_AllBehaviours.Count; i++)
-            {
-                if (m_AllBehaviours[i].m_IsDelayed)
-                    m_DelayedBehaviours.Add(m_AllBehaviours[i]);
-            }
+            if(inputActive && !m_Active)
+                m_Active = true;
         }
 
-        private void InitBehaviours()
+        private void IconCooldown()
         {
-            for (int i = 0; i < m_AllBehaviours.Count; i++)
-            {
-                m_AllBehaviours[i].m_AbilityRef = this;
-            }
+            if (m_Active)
+                m_Icon.fillAmount = m_Counter / m_Cooldown;
+            else
+                m_Icon.fillAmount = 1;
         }
     }
 }

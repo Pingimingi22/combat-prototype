@@ -50,6 +50,18 @@ public class InputManager : MonoBehaviour
 
     public static event DebugToggle OnDebugToggle;
 
+    public static event Ability1 OnAbility1;
+
+    public delegate void Ability1(bool active);
+
+    public static event Ability2 OnAbility2;
+
+    public delegate void Ability2(bool active);
+
+    public static event Ability3 OnAbility3;
+
+    public delegate void Ability3(bool active);
+
     private void Start()
     {
         //OnPause += GameManager.Instance.TogglePause;
@@ -71,6 +83,10 @@ public class InputManager : MonoBehaviour
 
         
         OnLook?.Invoke(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        OnAbility1?.Invoke(Input.GetKeyDown(KeyCode.Q));
+        OnAbility2?.Invoke(Input.GetKeyDown(KeyCode.E));
+        OnAbility3?.Invoke(Input.GetKeyDown(KeyCode.R));
         
     }
 
