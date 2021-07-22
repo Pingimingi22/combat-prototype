@@ -179,12 +179,12 @@ namespace Player
                  * */
 
                 //m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
-                Vector3 currentVel = m_cacheMoveDirection;
-                Vector3 desiredVel = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+                Vector3 currentVel = CacheMovDir;
+                Vector3 desiredVel = CalculateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
 
                 Vector3 requiredChange = desiredVel - currentVel;
 
-                m_cacheMoveDirection += requiredChange * 0.3f;
+                CacheMovDir += requiredChange * 0.3f;
 
                
             }
