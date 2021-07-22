@@ -25,6 +25,7 @@ namespace Player
         public float m_BobDistance = 1;
         public float m_GroundAcceleration = 0.3f;
         public float m_AirAcceleration = 0.1f;
+        public float m_JumpFallModifier = 2.0f;
 
 
         
@@ -119,7 +120,7 @@ namespace Player
 
             if (m_Rigidbody.velocity.y < 0)
             {
-                m_Rigidbody.velocity += Vector3.up * Physics.gravity.y * (1.5f - 1) * Time.deltaTime;
+                m_Rigidbody.velocity += Vector3.up * Physics.gravity.y * m_JumpFallModifier * Time.deltaTime;
             }
 
             // ======================================================================== //
