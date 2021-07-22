@@ -23,6 +23,8 @@ namespace Player
         public float m_maxSpeed = 5;
         public float m_BobSpeed = 1;
         public float m_BobDistance = 1;
+        public float m_GroundAcceleration = 0.3f;
+        public float m_AirAcceleration = 0.1f;
 
         [Header("Weapons")]
         public Weapon m_weapon1;
@@ -145,48 +147,25 @@ namespace Player
             if (!IsGrounded)
             {
                 // Slightly weaker movement.
-                   //CacheMovDir = CacheMovDir + CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
-            
-            }
-            else
-            {
-                // Full on movement.
-                /*
-                 * 
-                 * 
-                
-                ///The following code will do linear ramp up/down
-                Vec2 currentVel;
-                Vec2 desiredVel;    //Determined directly by input
 
-                Vec2 requiredChange = desiredVel - currentVel;
-                float maxChangePerFrame;
-                if (requiredChange.Magnitude() > maxChangePerFrame)
-                {
-                    requiredChange = requiredChange.Normalized() * maxChangePerFrame;
-                }
-                currentVel += requiredChange;
-
-                
-                ///The following code will do exponential decay for ramp up/down
-                Vec2 currentVel;
-                Vec2 desiredVel;    //Determined directly by input
-
-                Vec2 requiredChange = desiredVel - currentVel;
-                
-                currentVel += requiredChange * 0.3f;    //Make this fraction 1.0 for instant acceleration, or approach 0 to make it very gradual
-
-                 * */
-
-                //m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
                 Vector3 currentVel = CacheMovDir;
                 Vector3 desiredVel = CalculateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
 
                 Vector3 requiredChange = desiredVel - currentVel;
 
-                CacheMovDir += requiredChange * 0.3f;
+                CacheMovDir += requiredChange * m_AirAcceleration;
 
-               
+            }
+            else
+            {
+                // Full on movement.
+                
+                Vector3 currentVel = CacheMovDir;
+                Vector3 desiredVel = CalculateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+
+                Vector3 requiredChange = desiredVel - currentVel;
+
+                CacheMovDir += requiredChange * m_GroundAcceleration;
             }
 
         }
@@ -200,7 +179,7 @@ namespace Player
             Vector3 xMov = new Vector3(x * m_orientation.right.x, 0, x * m_orientation.right.z);
             Vector3 zMov = new Vector3(z * m_orientation.forward.x, 0, z * m_orientation.forward.z);
 
-            moveDir = ((xMov + zMov) * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
+            moveDir = ((xMov + zMov).normalized * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
 
             return moveDir;
         }

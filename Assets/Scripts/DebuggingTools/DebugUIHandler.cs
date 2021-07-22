@@ -65,7 +65,6 @@ public class DebugUIHandler : MonoBehaviour
         GraphicalDebugger.Assign<Vector3>(m_playerController.CacheMovDir, "CacheMovDir", m_CacheMovDirText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Horizontal"), "XAxis", m_XAxisText);
         GraphicalDebugger.Assign<float>(Input.GetAxis("Vertical"), "ZAxis", m_ZAxisText);
-        GraphicalDebugger.Assign<float>(m_playerController.m_TweenProgression, "TweenProgression", m_MovementTweenProgressText);
     }
 
     public void Toggle(bool active)
