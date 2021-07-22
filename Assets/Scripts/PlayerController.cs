@@ -41,7 +41,7 @@ namespace Player
 
         // Public bookkeeping.
         public bool IsGrounded { get; private set; }
-        private Vector3 m_cacheMoveDirection = Vector3.zero;
+        public Vector3 CacheMovDir = Vector3.zero;
    
         // Private bookkeeping.
         private float m_fireCounter = 0.0f;
@@ -101,7 +101,7 @@ namespace Player
             IsGrounded = CheckGrounded();
 
             // Making sure angular velocity isn't a problem.
-            Rigidbody.velocity = new Vector3(m_cacheMoveDirection.x, Rigidbody.velocity.y, m_cacheMoveDirection.z);
+            Rigidbody.velocity = new Vector3(CacheMovDir.x, Rigidbody.velocity.y, CacheMovDir.z);
             Rigidbody.angularVelocity = Vector3.zero;
 
             m_currentMoveSpeed = Rigidbody.velocity.magnitude;
@@ -134,29 +134,13 @@ namespace Player
             m_isMoving = false;
             if (x != 0 || z != 0)
                 m_isMoving = true;
-            else
-            {
-
-
-               Debug.Log("move direction:" + m_cacheMoveDirection);
-
-                //m_cacheMoveDirection *= 0.97f;
-               
-               //m_cacheMoveDirection.x = Mathf.Clamp(m_cacheMoveDirection.x, 0, 15);
-               //m_cacheMoveDirection.z = Mathf.Clamp(m_cacheMoveDirection.z, 0, 15);
-            }
 
 
             if (!IsGrounded)
             {
                 // Slightly weaker movement.
-                Vector3 currentVel = m_cacheMoveDirection;
-                Vector3 desiredVel = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
-
-                Vector3 requiredChange = desiredVel - currentVel;
-
-                m_cacheMoveDirection += requiredChange * 0.1f;
-
+                   //CacheMovDir = CacheMovDir + CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+            
             }
             else
             {
@@ -199,12 +183,6 @@ namespace Player
                
             }
 
-            if (m_cacheMoveDirection.magnitude > 15)
-            {
-                m_cacheMoveDirection = m_cacheMoveDirection.normalized * 15;
-                //Debug.Log("============== Surpassed max move speed: " + m_cacheMoveDirection);
-            }
-
         }
 
         private Vector3 CalcuateMoveDirection(float x, float z, float speedMultiplier)
@@ -216,7 +194,7 @@ namespace Player
             Vector3 xMov = new Vector3(x * m_orientation.right.x, 0, x * m_orientation.right.z);
             Vector3 zMov = new Vector3(z * m_orientation.forward.x, 0, z * m_orientation.forward.z);
 
-            moveDir = ((xMov + zMov).normalized * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
+            moveDir = ((xMov + zMov) * speedMultiplier * Time.deltaTime) + new Vector3(0, Rigidbody.velocity.y, 0);
 
             return moveDir;
         }
@@ -252,10 +230,10 @@ namespace Player
             if (active && IsGrounded)
             {
                 //m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-                m_cacheMoveDirection = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, Rigidbody.mass, m_Gravity);
-                m_cacheMoveDirection.x = Rigidbody.velocity.x;
-                m_cacheMoveDirection.z = Rigidbody.velocity.z;
-                Rigidbody.velocity = m_cacheMoveDirection;
+                CacheMovDir = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_JumpHeight, Rigidbody.mass, m_Gravity);
+                CacheMovDir.x = Rigidbody.velocity.x;
+                CacheMovDir.z = Rigidbody.velocity.z;
+                Rigidbody.velocity = CacheMovDir;
             }
         }
 
@@ -290,10 +268,10 @@ namespace Player
             Gizmos.color = defaultColour;
 
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + new Vector3(-m_cacheMoveDirection.x, m_cacheMoveDirection.y, -m_cacheMoveDirection.z));
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(-CacheMovDir.x, CacheMovDir.y, -CacheMovDir.z));
 
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, transform.position + new Vector3(m_cacheMoveDirection.x, m_cacheMoveDirection.y, m_cacheMoveDirection.z));
+            Gizmos.DrawLine(transform.position, transform.position + new Vector3(CacheMovDir.x, CacheMovDir.y, CacheMovDir.z));
 
         }
 
@@ -350,27 +328,6 @@ namespace Player
             }
 
         }
-
-        public void WeaponSway()
-        { 
-            
-        }
-
-        public Vector2 FindVelRelativeToLook()
-        {
-            float lookAngle = m_orientation.transform.eulerAngles.y;
-            float moveAngle = Mathf.Atan2(Rigidbody.velocity.x, Rigidbody.velocity.z) * Mathf.Rad2Deg;
-
-            float u = Mathf.DeltaAngle(lookAngle, moveAngle);
-            float v = 90 - u;
-
-            float magnitude = Rigidbody.velocity.magnitude;
-            float yMag = magnitude * Mathf.Cos(u * Mathf.Deg2Rad);
-            float xMag = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
-
-            return new Vector2(xMag, yMag);
-        }
-
         
     }
 }
