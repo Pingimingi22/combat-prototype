@@ -114,10 +114,15 @@ namespace Player
             m_Rigidbody.velocity = new Vector3(CacheMovDir.x, m_Rigidbody.velocity.y, CacheMovDir.z);
             m_Rigidbody.angularVelocity = Vector3.zero;
 
+
+            // ============================ FASTER FALLING ============================ //
+
             if (m_Rigidbody.velocity.y < 0)
             {
-                m_Rigidbody.velocity += Vector3.up * Physics.gravity.y * 1.5f * Time.deltaTime;
+                m_Rigidbody.velocity += Vector3.up * Physics.gravity.y * (1.5f - 1) * Time.deltaTime;
             }
+
+            // ======================================================================== //
 
             m_currentMoveSpeed = m_Rigidbody.velocity.magnitude;
 
