@@ -1252,6 +1252,8 @@ GameObject:
   - component: {fileID: 582412449}
   - component: {fileID: 582412448}
   - component: {fileID: 582412447}
+  - component: {fileID: 582412451}
+  - component: {fileID: 582412450}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1307,6 +1309,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &582412450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582412446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 636793a19eaaafe41b9a8cbb474e5155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whatsup: 0
+  hello: 0
+--- !u!114 &582412451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582412446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0705cabb19297af4e828a031354daabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whatsup: 0
+  goodbye: 0
 --- !u!1 &594497742
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_sensitivity: 50
   m_verticalLookLock: 75
-  m_moveSpeed: 125
+  m_moveSpeed: 500
   m_fireRate: 0.1
   m_bulletForce: 20
   m_JumpHeight: 1

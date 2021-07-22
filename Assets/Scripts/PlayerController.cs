@@ -139,31 +139,63 @@ namespace Player
 
 
                Debug.Log("move direction:" + m_cacheMoveDirection);
+
+                //m_cacheMoveDirection *= 0.97f;
                
-               
-               m_cacheMoveDirection.x = Mathf.Clamp(m_cacheMoveDirection.x, 0, 15);
-               m_cacheMoveDirection.z = Mathf.Clamp(m_cacheMoveDirection.z, 0, 15);
+               //m_cacheMoveDirection.x = Mathf.Clamp(m_cacheMoveDirection.x, 0, 15);
+               //m_cacheMoveDirection.z = Mathf.Clamp(m_cacheMoveDirection.z, 0, 15);
             }
 
 
             if (!IsGrounded)
             {
                 // Slightly weaker movement.
-                   m_cacheMoveDirection = m_cacheMoveDirection + CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
-            
+                Vector3 currentVel = m_cacheMoveDirection;
+                Vector3 desiredVel = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+
+                Vector3 requiredChange = desiredVel - currentVel;
+
+                m_cacheMoveDirection += requiredChange * 0.1f;
+
             }
             else
             {
                 // Full on movement.
-
-                Vector3 moveDirection = transform.right * x + transform.forward * z;
+                /*
+                 * 
+                 * 
                 
-                Vector3 xMov = new Vector3(Input.GetAxisRaw("Horizontal") * m_orientation.right.x, 0, Input.GetAxisRaw("Horizontal") * m_orientation.right.z);
-                Vector3 zMov = new Vector3(Input.GetAxisRaw("Vertical") * m_orientation.forward.x, 0, Input.GetAxisRaw("Vertical") * m_orientation.forward.z);
-                
-                //m_cacheMoveDirection = ((xMov + zMov).normalized * m_moveSpeed * Time.deltaTime)/* + new Vector3(0, m_rigidbody.velocity.y, 0)*/;
+                ///The following code will do linear ramp up/down
+                Vec2 currentVel;
+                Vec2 desiredVel;    //Determined directly by input
 
-                m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+                Vec2 requiredChange = desiredVel - currentVel;
+                float maxChangePerFrame;
+                if (requiredChange.Magnitude() > maxChangePerFrame)
+                {
+                    requiredChange = requiredChange.Normalized() * maxChangePerFrame;
+                }
+                currentVel += requiredChange;
+
+                
+                ///The following code will do exponential decay for ramp up/down
+                Vec2 currentVel;
+                Vec2 desiredVel;    //Determined directly by input
+
+                Vec2 requiredChange = desiredVel - currentVel;
+                
+                currentVel += requiredChange * 0.3f;    //Make this fraction 1.0 for instant acceleration, or approach 0 to make it very gradual
+
+                 * */
+
+                //m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+                Vector3 currentVel = m_cacheMoveDirection;
+                Vector3 desiredVel = CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+
+                Vector3 requiredChange = desiredVel - currentVel;
+
+                m_cacheMoveDirection += requiredChange * 0.3f;
+
                
             }
 
