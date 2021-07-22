@@ -67,6 +67,12 @@ namespace Player
         public float m_WaveSliceX = 0.0f;
 
 
+
+        // Tween progression. Properly organise this later.
+        public float m_TweenProgression = 0;
+
+
+
         // Start is called before the first frame update
         void Start()
         {
@@ -145,14 +151,47 @@ namespace Player
             else
             {
                 // Full on movement.
+                /*
+                 * 
+                 * 
+                
+                ///The following code will do linear ramp up/down
+                Vec2 currentVel;
+                Vec2 desiredVel;    //Determined directly by input
 
-                Vector3 dir = CalcuateMoveDirection(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), m_moveSpeed);
-                CacheMovDir = dir;
+                Vec2 requiredChange = desiredVel - currentVel;
+                float maxChangePerFrame;
+                if (requiredChange.Magnitude() > maxChangePerFrame)
+                {
+                    requiredChange = requiredChange.Normalized() * maxChangePerFrame;
+                }
+                currentVel += requiredChange;
+
+                
+                ///The following code will do exponential decay for ramp up/down
+                Vec2 currentVel;
+                Vec2 desiredVel;    //Determined directly by input
+
+                Vec2 requiredChange = desiredVel - currentVel;
+                
+                currentVel += requiredChange * 0.3f;    //Make this fraction 1.0 for instant acceleration, or approach 0 to make it very gradual
+
+                 * */
+
+                //m_cacheMoveDirection += CalcuateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+                Vector3 currentVel = CacheMovDir;
+                Vector3 desiredVel = CalculateMoveDirection(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), m_moveSpeed);
+
+                Vector3 requiredChange = desiredVel - currentVel;
+
+                CacheMovDir += requiredChange * 0.3f;
+
+               
             }
 
         }
 
-        private Vector3 CalcuateMoveDirection(float x, float z, float speedMultiplier)
+        private Vector3 CalculateMoveDirection(float x, float z, float speedMultiplier)
         {
             Vector3 moveDir = new Vector3();
 
