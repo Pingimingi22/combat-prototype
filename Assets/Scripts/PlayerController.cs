@@ -67,6 +67,12 @@ namespace Player
         public float m_WaveSliceX = 0.0f;
 
 
+
+        // Tween progression. Properly organise this later.
+        public float m_TweenProgression = 0;
+
+
+
         // Start is called before the first frame update
         void Start()
         {
@@ -185,7 +191,7 @@ namespace Player
 
         }
 
-        private Vector3 CalcuateMoveDirection(float x, float z, float speedMultiplier)
+        private Vector3 CalculateMoveDirection(float x, float z, float speedMultiplier)
         {
             Vector3 moveDir = new Vector3();
 
