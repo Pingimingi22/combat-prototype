@@ -97,8 +97,6 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            Debug.Log(transform.position.y);
-
             if (m_hasFired)
             {
                 m_fireCounter += Time.deltaTime;
