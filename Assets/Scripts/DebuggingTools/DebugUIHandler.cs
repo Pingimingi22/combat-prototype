@@ -38,6 +38,9 @@ public class DebugUIHandler : MonoBehaviour
     public Text m_CurrentHealthText;
     public Text m_CurrentMaxHealthText;
 
+    public Text m_ShootHeldText;
+    public Text m_ShootHeldCounterText;
+
     [Header("Combat Abilities")]
     public Text m_Ability1ActiveText;
     public Text m_Ability1CounterText;
@@ -85,6 +88,9 @@ public class DebugUIHandler : MonoBehaviour
 
         GraphicalDebugger.Assign<string>(m_AbilityController.m_Ability3.IsActive().ToString(), "Ability3Active", m_Ability3ActiveText);
         GraphicalDebugger.Assign<float>(m_AbilityController.m_Ability3.GetCounter(), "Ability3Counter", m_Ability3CounterText);
+
+        GraphicalDebugger.Assign<bool>(m_playerController.m_HoldingFire, "ShootHeld", m_ShootHeldText);
+        GraphicalDebugger.Assign<float>(m_playerController.m_HeldCounter, "ShootHeldCounter", m_ShootHeldCounterText);
     }
 
     public void Toggle(bool active)

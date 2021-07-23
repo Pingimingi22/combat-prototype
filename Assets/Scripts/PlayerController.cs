@@ -54,6 +54,10 @@ namespace Player
         // Private bookkeeping.
         private float m_fireCounter = 0.0f;
         private bool m_hasFired = false;
+        [HideInInspector]
+        public bool m_HoldingFire = false;
+        [HideInInspector]
+        public float m_HeldCounter = 0.0f;
         // ======================================================= //
 
 
@@ -77,6 +81,17 @@ namespace Player
         public float m_WaveSliceX = 0.0f;
         // ========================================================================== //
 
+
+
+        // ========================== TESTING RECOIL ========================== //
+
+        float m_AdditionalVerticalRecoil = 0.0f;
+
+        // ==================================================================== //
+
+
+
+
         // Start is called before the first frame update
         void Start()
         {
@@ -97,6 +112,8 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            
+
             if (m_hasFired)
             {
                 m_fireCounter += Time.deltaTime;
@@ -105,6 +122,16 @@ namespace Player
                     m_hasFired = false;
                     m_fireCounter = 0;
                 }
+            }
+
+            if (m_HoldingFire)
+            {
+                // They are holding down the fire button.
+                m_HeldCounter += Time.deltaTime;
+            }
+            else
+            {
+                m_HeldCounter = 0.0f;
             }
 
             IsGrounded = CheckGrounded();
@@ -199,9 +226,17 @@ namespace Player
         {
             if (active && !m_hasFired)
             {
+                m_HoldingFire = true; // ----------- To keep track of a continuous fire sequence. It's just here for testing reasons right now.
+
                 Ray ray = new Ray(m_mainCamera.transform.position, m_mainCamera.transform.forward);
                 RaycastHit hit;
                 Weapon currentWeapon = PlayerUtilities.GetCurrentWeapon();
+
+                // =========== TESTING =========== //
+                m_AdditionalVerticalRecoil += currentWeapon.ShootRecoil(m_mainCamera.transform, m_HeldCounter);
+                // =============================== //
+
+
                 if (Physics.Raycast(ray, out hit))
                 {
                     if (hit.transform.gameObject != null)
@@ -219,6 +254,9 @@ namespace Player
                     }
                 }
             }
+            else if (!active) // This else if is a cheap way to track whether they let go of the fire button. To keep track of a continuous fire sequence.
+                m_HoldingFire = false;
+            
         }
 
         public void Jump(bool active)
