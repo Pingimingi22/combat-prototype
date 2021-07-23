@@ -40,6 +40,7 @@ public class DebugUIHandler : MonoBehaviour
 
     public Text m_ShootHeldText;
     public Text m_ShootHeldCounterText;
+    public Text m_VertRecoilText;
 
     [Header("Combat Abilities")]
     public Text m_Ability1ActiveText;
@@ -91,6 +92,8 @@ public class DebugUIHandler : MonoBehaviour
 
         GraphicalDebugger.Assign<bool>(m_playerController.m_HoldingFire, "ShootHeld", m_ShootHeldText);
         GraphicalDebugger.Assign<float>(m_playerController.m_HeldCounter, "ShootHeldCounter", m_ShootHeldCounterText);
+
+        GraphicalDebugger.Assign<float>(m_playerController.m_AdditionalVerticalRecoil, "VertRecoil", m_VertRecoilText);
     }
 
     public void Toggle(bool active)

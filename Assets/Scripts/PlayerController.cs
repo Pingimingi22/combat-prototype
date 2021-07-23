@@ -85,7 +85,8 @@ namespace Player
 
         // ========================== TESTING RECOIL ========================== //
 
-        float m_AdditionalVerticalRecoil = 0.0f;
+        [HideInInspector]
+        public float m_AdditionalVerticalRecoil = 0.0f;
 
         // ==================================================================== //
 
@@ -153,6 +154,15 @@ namespace Player
             m_currentMoveSpeed = m_Rigidbody.velocity.magnitude;
 
             WeaponBob();
+
+
+
+            // Testing recoil stuff.
+            if(!m_HoldingFire)
+                m_AdditionalVerticalRecoil = m_AdditionalVerticalRecoil * 0.75f;
+
+
+
         }
 
 
@@ -166,7 +176,7 @@ namespace Player
             float desiredX = rot.y + mouseX;
 
             // Rotate
-            xRotation -= mouseY;
+            xRotation -= mouseY + m_AdditionalVerticalRecoil;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
             // Perform the rotations
