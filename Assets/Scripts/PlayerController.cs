@@ -110,8 +110,10 @@ namespace Player
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-        // Update is called once per frame
-        void Update()
+		
+
+		// Update is called once per frame
+		void Update()
         {
             
 
@@ -158,8 +160,13 @@ namespace Player
 
 
             // Testing recoil stuff.
-            if(!m_HoldingFire)
-                m_AdditionalVerticalRecoil = m_AdditionalVerticalRecoil * 0.75f;
+            if (!m_HoldingFire)
+            { 
+                float requiredChange = m_AdditionalVerticalRecoil - m_AdditionalVerticalRecoil;
+                m_AdditionalVerticalRecoil -= 1 * 0.1f;
+                m_AdditionalVerticalRecoil = Mathf.Clamp(m_AdditionalVerticalRecoil, 0, 85f);
+
+            }
 
 
 
@@ -176,11 +183,11 @@ namespace Player
             float desiredX = rot.y + mouseX;
 
             // Rotate
-            xRotation -= mouseY + m_AdditionalVerticalRecoil;
+            xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
             // Perform the rotations
-            m_mainCamera.transform.localRotation = Quaternion.Euler(xRotation, desiredX, 0);
+            m_mainCamera.transform.localRotation = Quaternion.Euler(Mathf.Clamp(xRotation - m_AdditionalVerticalRecoil, -90f, 90f), desiredX, 0);
             m_orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
 
         }
@@ -246,6 +253,7 @@ namespace Player
                 m_AdditionalVerticalRecoil += currentWeapon.ShootRecoil(m_mainCamera.transform, m_HeldCounter);
                 // =============================== //
 
+                m_hasFired = true;
 
                 if (Physics.Raycast(ray, out hit))
                 {
@@ -254,7 +262,6 @@ namespace Player
                         Decal newDecal = new Decal(hit.transform, hit.point, currentWeapon.m_HitDecal, hit.normal);
                         GameManager.Instance.AddDecal(newDecal);
 
-                        m_hasFired = true;
 
                         // Adding a force to the hit object.
                         if (hit.rigidbody != null)
