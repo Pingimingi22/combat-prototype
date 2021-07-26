@@ -17,6 +17,7 @@ namespace Player
         public float m_fireRate = 0.5f;
         public float m_bulletForce = 5;
         public float m_JumpHeight = 5;
+        public float m_SecondJumpHeight = 2.5f;
         public float m_groundCheckHeight = 1;
         public float m_groundCheckRadius = 1;
         public float m_Gravity = -9.8f;
@@ -41,8 +42,7 @@ namespace Player
         public Rigidbody m_Rigidbody;
 
 
-        // Private references.
-        private float xRotation = 0;
+        
 
 
         // ================== BOOKKEEPING STUFF ================== //
@@ -50,6 +50,7 @@ namespace Player
         // Public bookkeeping.
         public bool IsGrounded { get; private set; }
         public Vector3 CacheMovDir = Vector3.zero;
+        
    
         // Private bookkeeping.
         private float m_fireCounter = 0.0f;
@@ -58,6 +59,10 @@ namespace Player
         public bool m_HoldingFire = false;
         [HideInInspector]
         public float m_HeldCounter = 0.0f;
+        
+        private float xRotation = 0;
+
+        private bool m_HasDoubleJumped = false;
         // ======================================================= //
 
 
@@ -138,6 +143,8 @@ namespace Player
             }
 
             IsGrounded = CheckGrounded();
+            if (IsGrounded)
+                m_HasDoubleJumped = false;
 
             // Making sure angular velocity isn't a problem.
             m_Rigidbody.velocity = new Vector3(CacheMovDir.x, m_Rigidbody.velocity.y, CacheMovDir.z);
@@ -284,6 +291,16 @@ namespace Player
                 CacheMovDir.x = m_Rigidbody.velocity.x;
                 CacheMovDir.z = m_Rigidbody.velocity.z;
                 m_Rigidbody.velocity = CacheMovDir;
+            }
+            else if ((active && !IsGrounded) && !m_HasDoubleJumped)
+            {
+                CacheMovDir = Vector3.up * CustomMaths.ControllerMaths.CalculateJumpForce(m_SecondJumpHeight, m_Rigidbody.mass, m_Gravity);
+                CacheMovDir.x = m_Rigidbody.velocity.x;
+                CacheMovDir.z = m_Rigidbody.velocity.z;
+                m_Rigidbody.velocity = CacheMovDir;
+
+                // Have to tick m_HasDoubleJumped to false;
+                m_HasDoubleJumped = true;
             }
         }
 
