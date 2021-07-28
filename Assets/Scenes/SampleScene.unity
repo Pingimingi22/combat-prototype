@@ -1863,9 +1863,10 @@ MonoBehaviour:
   m_fireRate: 0.1
   m_bulletForce: 20
   m_JumpHeight: 2
+  m_SecondJumpHeight: 2.5
   m_groundCheckHeight: 0.67
   m_groundCheckRadius: 0.39
-  m_Gravity: -9.81
+  m_Gravity: -12
   m_maxSpeed: 10
   m_BobSpeed: 5
   m_BobDistance: 0.05

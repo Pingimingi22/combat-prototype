@@ -9,7 +9,7 @@ namespace CustomMaths
     {
         public static float CalculateJumpForce(float wantedHeight, float weight, float g)
         {
-            float jumpForceRequired = Mathf.Sqrt(-2.0f * Physics.gravity.y * wantedHeight);
+            float jumpForceRequired = Mathf.Sqrt(-2.0f * g * wantedHeight);
 
             return jumpForceRequired;
             
